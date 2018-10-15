@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>wallet</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+  <script>
+    function IEVersion() {
+      let userAgent = navigator.userAgent;
+      let isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器
+      let isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
+      let isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1;
+      if(isIE) {
+        let reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+        reIE.test(userAgent);
+        let fIEVersion = parseFloat(RegExp["$1"]);
+        if(fIEVersion === 7) {
+          return 7;
+        } else if(fIEVersion === 8) {
+          return 8;
+        } else if(fIEVersion === 9) {
+          return 9;
+        } else if(fIEVersion === 10) {
+          return 10;
+        } else {
+          return 6;
+        }
+      } else if(isEdge) {
+        return 'edge';
+      } else if(isIE11) {
+        return 11;
+      }else{
+        return -1;
+      }
+    }
+    if(IEVersion()!== -1){
+      alert("您的浏览器版本过低，请使用Chorme浏览器或者将浏览器的运行模式调整为极速模式 Your browser version is too low, please use the Chorme browser or adjust the browser's operating mode to the extreme mode.")
+    }
+  </script>
+</html>

@@ -1,0 +1,261 @@
+@import url("./style.less");
+*{box-sizing: border-box;font-family: Helvetica,'Microsoft YaHei';}
+html {background:#0c1323;color:#fff;box-sizing: border-box; font-size:16px;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {margin:0;padding:0;}
+body,button,input,select,textarea {font-size:12px;box-sizing: border-box;}
+body{background-color: #0b1422;position:absolute;top:0;left:0;right:0;bottom:0;padding:0;margin: 0}
+#app{background-color: #0b1422;}
+input,select,textarea {font-size:100%;}
+table {border-collapse:collapse;border-spacing:0;}
+th {text-align:inherit;}
+fieldset,img {border:none;}
+iframe {display:block;}
+ol,ul {list-style:none;}
+caption,th {text-align:left;}
+h1,h2,h3,h4,h5,h6 {font-size:100%;font-weight:500;}
+sub,sup {font-size:75%;line-height:0;position:relative;vertical-align:baseline;}
+sup {top:-0.5em;}
+sub {bottom:-0.25em;}
+a:hover {text-decoration:underline;}
+ins,a {text-decoration:none;}
+a:focus,*:focus {outline:none;}
+.clear {clear:both;display:block;font-size:0;height:0;line-height:0;overflow:hidden;}
+/* 设置显示和隐藏，通常用来与 js 配合 */
+.hide {display:none;}
+.block {display:block;}
+/* 设置浮动，减少浮动带来的 bug */
+.fl,.fr {display:inline;}
+.fl {float:left;}
+.fr {float:right;}
+.hidden{visibility:hidden}
+.none{display:none}
+/*图标字体*/
+@font-face {font-family: 'iconfont';
+  src: url('./fonts/iconfont.eot');
+  src: url('./fonts/iconfont.eot?#iefix') format('embedded-opentype'),
+  url('./fonts/iconfont.woff') format('woff'),
+  url('./fonts/iconfont.ttf') format('truetype'),
+  url('./fonts/iconfont.svg#iconfont') format('svg');
+}
+.iconfont{
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+}
+i.iconfont-common-white{
+  color:@c-color;
+}
+i.iconfont-common-green{
+  color:@c-h-color;
+}
+i.iconfont-common-gray{
+  color:@c-font-gray2-color;
+}
+i.iconfont-20{
+  font-size:20px;
+}
+/**箭头**/
+.arrow {display: block;width: 7px;height: 7px;border-top: 0.1rem solid #BCBCBC;border-right: 0.1rem solid #BCBCBC;margin-top: 1.25rem;margin-left: 0.8rem;}
+.left-arrow {transform: rotate(225deg);}
+.right-arrow {transform: rotate(45deg);}
+
+/**虚、实线**/
+.dotted-line {border: 0.1rem dashed #D7D7D7;width: 100%;}
+.solid-line {border: 0.1rem solid #D7D7D7;width: 100%;}
+
+/**cursor-p**/
+.cursor-p {cursor: pointer;}
+
+/**text-d**/
+.text-d {text-decoration: underline;}
+
+/**overflow ....**/
+.overflow {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+
+/**拖动条效果**/
+&::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+&::-webkit-scrollbar-track {
+  background-color: #222d3f;
+  border-radius: 10px;
+}
+&::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #658ec7;
+}
+/**文字跳转**/
+.text-href{
+  font-size: @font-size-14;
+  color: @c-font-blue1-color;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/**h1**/
+.h1{
+  font-size: @font-size-24;
+  color: @c-color;
+  text-align: center;
+}
+.h2{
+
+}
+.h3{
+  font-size: @font-size-22;
+  color: @c-color;
+}
+input{
+  color:@c-color;
+  &::-webkit-input-placeholder {
+    font-size: @font-size;
+    color:@c-ipt-placeholder;
+  }
+  &::-moz-placeholder {
+    font-size: @font-size;
+    color:@c-ipt-placeholder;
+  }
+  &:-ms-input-placeholder {
+    font-size: @font-size;
+    color:@c-ipt-placeholder;
+  }
+}
+/**中间主体部分最外层div**/
+.main-content{
+  //width:1024px;
+  max-width: 1024px;
+  margin:0 auto 100px;
+  height:100%;
+  background-color: @bg-color;
+}
+/**盒子布局flex**/
+.flex{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.flex-common{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+}
+@media screen and (max-width: 768px){
+  .flex {
+    display: block;
+    text-align: center;
+  }
+  .main-content{
+    margin:0 auto 140px;
+  }
+}
+/*省略号...*/
+.overflow{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/*icon图标*/
+.icon-common{
+  display:inline-block;
+  width:17px;
+  height:15px;
+  background:url("./../images/icon.png") no-repeat;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.icon-copy{
+  height:16px;
+  background-position: -176px -60px;
+}
+/*table*/
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background:@h-bg-color;
+  th, td {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: @font-size-14;
+  }
+  th {
+    border-bottom: @border2;
+  }
+  td {
+    border-bottom: 1px solid @table-td-bd;
+  }
+  .big-show{
+    display:table-row;
+  }
+  .small-show{
+    display:none;
+  }
+}
+@media screen and (max-width: 768px) {
+
+  table {
+    border: 0;
+    thead {
+      display: none;
+    }
+      tr {
+        display: block;
+      }
+      td {
+        display: block;
+        text-align: right;
+        font-size: 13px;
+        border-bottom: 1px solid @table-td-bd;
+      }
+      td:last-child {
+        border-bottom: @border2;
+        margin-bottom: 10px;
+      }
+      td:before {
+        content: attr(data-label);
+        float: left;
+        text-transform: uppercase;
+        font-weight: bold;
+        color:@c-color;
+      }
+    td.no-data{
+      border-bottom: none;
+    }
+    .big-show{
+      display:none;
+    }
+    .small-show{
+      display:block;
+    }
+  }
+}
+@media only screen and (min-device-width: 320px)and (-webkit-min-device-pixel-ratio: 2) {
+  //针对iPhone 4, 5c,5s, 所有iPhone6的放大模式，个别iPhone6的标准模式
+  html{
+    font-size:10px;
+  }
+}
+@media only screen and (min-device-width: 375px)and (-webkit-min-device-pixel-ratio: 2) {
+  　　//针对大多数iPhone6的标准模式
+  html{
+    font-size:12px;
+  }
+}
+
+@media only screen and (min-device-width: 375px)and (-webkit-min-device-pixel-ratio: 3) {
+  　　//针对所有iPhone6+的放大模式
+  html{
+    font-size:12px;
+  }
+
+}
+@media only screen and (min-device-width:412px) and (-webkit-min-device-pixel-ratio: 3) {
+  　　//针对所有iPhone6+的标准模式,414px写为412px是由于三星Nexus 6为412px，可一并处理
+  html{
+    font-size:16px;
+  }
+}
