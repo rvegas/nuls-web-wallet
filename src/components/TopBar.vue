@@ -2,8 +2,8 @@
   <div class="top">
     <el-row class="top-info">
       <el-col :span="3" class="logo cursor-p">
-        <!--<img @click="toHome" src="../assets/images/logo.svg"/>-->
-        <img @click="toHome" src="../assets/images/testnet-logo.svg"/>
+        <img @click="toHome" src="../assets/images/logo.svg"/>
+        <!--<img @click="toHome" src="../assets/images/testnet-logo.svg"/>-->
       </el-col>
       <el-col :span="14" class="menu">
          <el-menu :default-active="activeNav" class="top-menu top-menu-left" mode="horizontal" @select="handleSelect">
@@ -19,14 +19,18 @@
              <i class="iconfont iconfont-common-white iconfont-consensus">&#xe618;</i>
              <span>{{ $t('message.consensus') }}</span>
            </el-menu-item>
+           <el-menu-item index="5" :class="[activeNav==='5'? 'is-active':'no-active',this.language==='en' ? 'li-en':'']">
+             <i class="iconfont iconfont-common-white">&#xe62c;</i>
+             <span>{{ $t('message.vote') }}</span>
+           </el-menu-item>
            <el-menu-item index="4" :class="[activeNav==='4'? 'is-active':'no-active',this.language==='en' ? 'li-en':'']">
              <i class="iconfont iconfont-common-white">&#xe68f;</i>
              <span>{{ $t('message.browser') }}</span>
            </el-menu-item>
-           <el-menu-item index="5" :class="[activeNav==='5'? 'is-active':'no-active',this.language==='en' ? 'li-en':'']">
-             <i class="iconfont iconfont-common-white iconfont-20">&#xe62e;</i>
-             <span>{{ $t('message.testNuls') }}</span>
-           </el-menu-item>
+           <!--<el-menu-item index="6" :class="[activeNav==='6'? 'is-active':'no-active',this.language==='en' ? 'li-en':'']">-->
+             <!--<i class="iconfont iconfont-common-white iconfont-20">&#xe62e;</i>-->
+             <!--<span>{{ $t('message.testNuls') }}</span>-->
+           <!--</el-menu-item>-->
          </el-menu>
       </el-col>
       <el-col :span="7" class="top-icon">
@@ -64,67 +68,79 @@
       </el-col>
     </el-row>
     <el-collapse-transition>
-      <div class="menu-ml" v-show="showMenus">
-
-        <el-menu default-active="1" @select="handleSelect">
-          <el-menu-item index="1" :class="activeNav==='1'? 'is-active':'no-active'">
-            <!--<i class="icon-i1 icon-common"></i>-->
-            <i class="iconfont iconfont-common-white">&#xe613;</i>
-            <span slot="title">{{ $t('message.account') }}</span>
-          </el-menu-item>
-          <el-menu-item index="2" :class="activeNav==='2'? 'is-active':'no-active'">
-            <!--<i class="icon-i2 icon-common"></i>-->
-            <i class="iconfont iconfont-common-white">&#xe615;</i>
-            <span slot="title">{{ $t('message.transfer') }}</span>
-          </el-menu-item>
-          <el-menu-item index="3" :class="activeNav==='3'? 'is-active':'no-active'">
-            <!--<i class="icon-i3 icon-common"></i>-->
-            <i class="iconfont iconfont-common-white">&#xe618;</i>
-            <span slot="title">{{ $t('message.consensus') }}</span>
-          </el-menu-item>
-          <el-menu-item index="4" :class="activeNav==='4'? 'is-active':'no-active'">
-            <!--<i class="icon-i4 icon-common"></i>-->
-            <i class="iconfont iconfont-common-white">&#xe68f;</i>
-            <span slot="title">{{ $t('message.browser') }}</span>
-          </el-menu-item>
-          <el-menu-item index="5" :class="activeNav==='5'? 'is-active':'no-active'">
-            <i class="iconfont iconfont-common-white iconfont-20">&#xe62e;</i>
-            <span slot="title">{{ $t('message.testNuls') }}</span>
-          </el-menu-item>
-           <el-menu @select="handleSelect2">
-             <el-submenu index="5">
-               <template slot="title">
-                 <span>{{ $t('message.set') }}</span>
-               </template>
-               <el-menu-item-group>
-                 <el-menu-item index="5-1">{{ $t('message.accountBackups') }}</el-menu-item>
-                 <el-menu-item index="5-2">{{ $t('message.editPassword') }}</el-menu-item>
-                 <el-menu-item index="5-3">{{ $t('message.setAlias') }}</el-menu-item>
-               </el-menu-item-group>
-             </el-submenu>
-           </el-menu>
-          <el-menu-item index="5">
-            <el-select v-model="languageValue" class="language" :popper-append-to-body="false" @change="selectLanguage">
-              <el-option v-for="item in languageList" :key="item.key" :value="item.value">
-              </el-option>
-            </el-select>
-          </el-menu-item>
-          <el-menu-item index="6" v-show="userAddress!==''">
-            <div @click="safeExit">
-              <span slot="title">{{ $t('message.exit') }}</span>
-            </div>
-          </el-menu-item>
-          <el-menu-item index="7">
-            <span slot="title">{{ $t('message.help') }}</span>
-          </el-menu-item>
-        </el-menu>
+      <div class="menu-ml" v-show="showMenus" @click="closeMenu">
+        <div class="memu-ml-div" @click.stop="closeMenu !==closeMenu">
+          <el-menu default-active="1" @select="handleSelect">
+            <el-menu-item index="1" @click="showMenu" :class="activeNav==='1'? 'is-active':'no-active'">
+              <!--<i class="icon-i1 icon-common"></i>-->
+              <i class="iconfont iconfont-common-white">&#xe613;</i>
+              <span slot="title">{{ $t('message.account') }}</span>
+            </el-menu-item>
+            <el-menu-item index="2" @click="showMenu" :class="activeNav==='2'? 'is-active':'no-active'">
+              <!--<i class="icon-i2 icon-common"></i>-->
+              <i class="iconfont iconfont-common-white">&#xe615;</i>
+              <span slot="title">{{ $t('message.transfer') }}</span>
+            </el-menu-item>
+            <el-menu-item index="3" @click="showMenu" :class="activeNav==='3'? 'is-active':'no-active'">
+              <!--<i class="icon-i3 icon-common"></i>-->
+              <i class="iconfont iconfont-common-white">&#xe618;</i>
+              <span slot="title">{{ $t('message.consensus') }}</span>
+            </el-menu-item>
+            <el-menu-item index="5" @click="showMenu" :class="activeNav==='5'? 'is-active':'no-active'">
+              <i class="iconfont iconfont-common-white">&#xe62c;</i>
+              <span slot="title">{{ $t('message.vote') }}</span>
+            </el-menu-item>
+            <el-menu-item index="4" @click="showMenu" :class="activeNav==='4'? 'is-active':'no-active'">
+              <!--<i class="icon-i4 icon-common"></i>-->
+              <i class="iconfont iconfont-common-white">&#xe68f;</i>
+              <span slot="title">{{ $t('message.browser') }}</span>
+            </el-menu-item>
+            <!--<el-menu-item index="6" @click="showMenu" :class="activeNav==='6'? 'is-active':'no-active'">-->
+              <!--<i class="iconfont iconfont-common-white iconfont-20">&#xe62e;</i>-->
+              <!--<span slot="title">{{ $t('message.testNuls') }}</span>-->
+            <!--</el-menu-item>-->
+            <el-menu @select="handleSelect2">
+              <el-submenu index="5">
+                <template slot="title">
+                  <span>{{ $t('message.set') }}</span>
+                </template>
+                <el-menu-item-group>
+                  <el-menu-item index="5-1" @click="showMenu">{{ $t('message.accountBackups') }}</el-menu-item>
+                  <el-menu-item index="5-2" @click="showMenu">{{ $t('message.editPassword') }}</el-menu-item>
+                  <el-menu-item index="5-3" @click="showMenu">{{ $t('message.setAlias') }}</el-menu-item>
+                </el-menu-item-group>
+              </el-submenu>
+            </el-menu>
+            <el-menu>
+              <el-submenu index="7">
+                <template slot="title">
+                  <span>{{languageValue}}</span>
+                </template>
+                <el-menu-item-group class="language-group">
+                  <el-menu-item index="7-1" @click="showMenu"><span @click="changeLanguage('cn')">中文</span></el-menu-item>
+                  <el-menu-item index="7-2" @click="showMenu"><span @click="changeLanguage('en')">English</span></el-menu-item>
+                </el-menu-item-group>
+              </el-submenu>
+            </el-menu>
+            <el-menu-item index="8" v-show="userAddress!==''">
+              <div @click="safeExitMobile">
+                <span slot="title">{{ $t('message.exit') }}</span>
+              </div>
+            </el-menu-item>
+            <el-menu-item index="9">
+              <div @click="helpMobile">
+                <span slot="title">{{ $t('message.help') }}</span>
+              </div>
+            </el-menu-item>
+          </el-menu>
+        </div>
       </div>
     </el-collapse-transition>
   </div>
 </template>
 
 <script>
-  import {contentMinHeight} from '@/utils/util'
+  import {contentMinHeight,versions} from '@/utils/util'
   import nulsJs from 'nuls-jssdk'
 
   export default {
@@ -180,12 +196,12 @@
         this.languageValue='English'
       }
       this.selectLanguage();
-      console.log("v0.0.37");
+      console.log("v0.0.2");
       this.$nextTick(() => {
         setTimeout(() => {
           contentMinHeight();
         }, 500)
-      })
+      });
     },
     methods: {
       /**
@@ -195,12 +211,23 @@
         this.showMenus = !this.showMenus
       },
 
+      closeMenu(){
+        this.showMenus = false;
+      },
+
       /**
        * 首页跳转 To home
        * */
       toHome() {
         this.$store.commit('setActiveNav', '1');
         sessionStorage.setItem("activeNav", '1');
+
+        if(versions().mobileVersions){
+          if(this.showMenus){
+            this.showMenus = false;
+          }
+        }
+
         if (localStorage.hasOwnProperty('address')) {
           this.$router.push({
             name: '/account',
@@ -258,7 +285,19 @@
         } else if (key === '4') {
           //window.open('https://nulscan.io/', '_blank')
           window.open(this.$store.getters.getBrowserAddress, '_blank');
-        } else if (key === '5') {
+        }else if (key === '5') {
+          if (localStorage.hasOwnProperty('address')) {
+            this.$store.commit('setActiveNav', key);
+            sessionStorage.setItem("activeNav", key);
+            this.$router.push({
+              name: '/voteList',
+            })
+          } else {
+            this.$message({
+              message: this.$t('message.prompt'), type: 'warning', duration: '1000'
+            });
+          }
+        } else if (key === '6') {
           this.$store.commit('setActiveNav', key);
           sessionStorage.setItem("activeNav", key);
           this.$router.push({
@@ -341,7 +380,12 @@
         localStorage.setItem("lang", this.languageValue === "中文" ? "cn" : "en");
         this.$store.commit('setLang', this.languageValue === "中文" ? "cn" : "en");
       },
-
+      changeLanguage(language){
+        this.languageValue = language==='cn' ? "中文" : "English";
+        this.$i18n.locale = language;
+        localStorage.setItem("lang", language);
+        this.$store.commit('setLang', language);
+      },
       /**
        * 安全退出
        * Safe exit
@@ -365,6 +409,10 @@
           });
         }
       },
+      safeExitMobile() {
+        this.safeExit();
+        this.showMenu();
+      },
       /**
        * 帮助
        * help
@@ -374,7 +422,11 @@
         sessionStorage.setItem("activeNav", "");
         this.$router.push({
           name: '/help',
-        })
+        });
+      },
+      helpMobile() {
+        this.help();
+        this.showMenu();
       },
     },
   }
@@ -408,7 +460,7 @@
             height: 63px;
             line-height: 63px;
             padding: 0;
-            margin: 0 20px;
+            margin: 0 10px;
             font-size: @font-size-16;
             background-color: @bg-1-color;
             color: @c-color;
@@ -437,7 +489,7 @@
             }
           }
           li.li-en{
-            margin: 0 13px;
+            margin: 0 7px;
           }
         }
       }
@@ -591,6 +643,9 @@
   @media screen and (max-width: 1000px) {
     .top {
       .top-info {
+        .logo{
+          margin-left:10px;
+        }
         .menu {
           display: none;
         }
@@ -600,74 +655,103 @@
         .top-icon-1 {
           display: block;
           float: right;
-          text-align: center;
+          text-align: right;
+          margin:0 5px 0 0;
           i {
-            font-size: 1.5rem;
-            line-height: 4rem;
+            font-size: 2.2rem;
+            height: 64px;
+            line-height: 64px;
           }
         }
       }
       .menu-ml {
         z-index: 99;
         position: fixed;
-        width: 50%;
-        background-color: #1c2738;
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
         right: 0;
-        .el-menu {
-          background: @h-bg-color;
-          li {
-            font-size: @font-size-16;
-            background-color: @bg-1-color;
-            color: @c-color;
-            .el-submenu__title {
-              font-size: @font-size-16;
-              color: @c-color;
-              &:hover {
-                background: @bg-1-color;
-                color: @c-h-color;
-              }
+        .memu-ml-div{
+          z-index: 100;
+          width: 50%;
+          position: absolute;
+          background-color: #1c2738;
+          right: 0;
+          .el-menu {
+            background: @h-bg-color;
+            border: 0;
+            z-index: 300;
+            .el-menu-item, .el-submenu__title {
+              height: 42px;
+              line-height: 42px;
             }
-            .language {
-              .el-input {
-                .el-input__inner {
-                  padding-left: 0;
-                  font-size: @font-size-16;
+            li {
+              font-size: @font-size-16;
+              background-color: @bg-1-color;
+              color: @c-color;
+              .el-submenu__title {
+                font-size: @font-size-16;
+                color: @c-color;
+                &:hover {
+                  background: @bg-1-color;
+                  color: @c-h-color;
+                }
+              }
+              .language {
+                .el-input {
+                  .el-input__inner {
+                    padding-left: 0;
+                    font-size: @font-size-16;
+                  }
+                }
+                &:hover {
+                  .el-input {
+                    .el-input__inner {
+                      color: @c-h-color;
+                    }
+                  }
                 }
               }
               &:hover {
-                .el-input {
-                  .el-input__inner {
-                    color: @c-h-color;
+                color: @c-h-color;
+                i.iconfont {
+                  color: @c-h-color;
+                }
+              }
+            }
+            li.is-active {
+              color: @c-h-color;
+              border-bottom-color: @h-bd-color;
+            }
+            li.no-active {
+              &:hover{
+                color: @c-h-color;
+              }
+              color: @c-color;
+            }
+            .el-menu{
+              li.is-active{
+                color:@c-color;
+                &:hover{
+                  color:@c-h-color;
+                }
+              }
+            }
+            .language-group{
+              ul{
+                li{
+                  padding-right:0;
+                  span{
+                    display:inline-block;
+                    width:100%;
+                    height:100%;
                   }
                 }
               }
             }
-            &:hover {
-              color: @c-h-color;
-              i.iconfont {
-                color: @c-h-color;
-              }
-            }
-          }
-          li.is-active {
-            color: @c-h-color;
-            border-bottom-color: @h-bd-color;
-          }
-          li.no-active {
-            &:hover{
-              color: @c-h-color;
-            }
-            color: @c-color;
-          }
-          .el-menu{
-            li.is-active{
-              color:@c-color;
-              &:hover{
-                color:@c-h-color;
-              }
-            }
           }
         }
+
         .top-menu {
           background-color: transparent;
           li {

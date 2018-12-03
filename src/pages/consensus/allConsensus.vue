@@ -44,7 +44,8 @@
             <div class="search-right">
               <i class="icon-search iconfont iconfont-common-gray">&#xe614;</i>
               <input v-model="keyword" class="search-ipt" type="text" :placeholder="$t('message.allConsensusInfo6')">
-              <span @click="searchConsensusList">{{$t('message.allConsensusInfo7')}}</span>
+              <span @click="searchConsensusList" class="search-text">{{$t('message.allConsensusInfo7')}}</span>
+              <i class="icon-search iconfont iconfont-common-blue" @click="searchConsensusList">&#xe614;</i>
             </div>
           </div>
         </div>
@@ -154,16 +155,14 @@
       }
     },
     created() {
-      this.getAllConsensus();
-      this.getConsensusList();
+      // this.getAllConsensus();
+      // this.getConsensusList();
     },
     mounted() {
       this.getAllConsensus();
       this.getConsensusList();
-    },
-    //离开当前页面后执行
-    destroyed() {
-      // clearInterval(this.allSetInterval)
+      this.$store.commit('setActiveNav', '3');
+      sessionStorage.setItem("activeNav", '3');
     },
     methods: {
 
@@ -207,7 +206,7 @@
             _this.loading = false;
             _this.nodeData = data.data.list;
             _this.totalAll = data.data.total;
-            for (let i in data.data.list) {
+            for (let i=0;i<data.data.list.length;i++) {
               _this.nodeData[i].deposit = LeftShiftEight(data.data.list[i].deposit).toString();
               _this.nodeData[i].totalDeposit = LeftShiftEight(data.data.list[i].totalDeposit).toString();
               _this.nodeData[i].agentAddresss = (data.data.list[i].agentAddress).substr(0, 4) + '...' + (data.data.list[i].agentAddress).substr(-4);
@@ -265,7 +264,7 @@
       nodeDetail(packingAddress,agentHash) {
         this.$router.push({
           name: '/nodeDetail',
-          query: {packingAddress: packingAddress,agentHash:agentHash},
+          query: {packingAddress: packingAddress,agentHash:agentHash,routerName:'allConsensus'},
         });
       }
     },
@@ -309,19 +308,6 @@
             margin-bottom: 13px;
           }
         }
-        @media screen and (max-width: 768px){
-          .detail-box {
-            width:90%;
-            margin: auto;
-            border-right: none;
-            display:flex;
-            justify-content: space-between;
-            align-items: center;
-            div{
-              margin-bottom: 10px;
-            }
-          }
-        }
         .detail-box3 {
           border-right: none;
         }
@@ -358,6 +344,9 @@
             position: relative;
             width: 49%;
             text-align: right;
+            .iconfont-common-blue{
+              display:none;
+            }
             .icon-search {
               background-position: -381px -60px;
               position: absolute;
@@ -445,8 +434,8 @@
               right: 4px;
             }
             .icon-text2{
-              top: 14px;
-              right: 9px;
+              top: 13px;
+              right: 8px;
             }
             .icon-status-green {
               background-position: -191px -115px;
@@ -461,6 +450,106 @@
         }
         .node-box:nth-child(4n) {
           margin-right: 0;
+        }
+      }
+    }
+    @media screen and (max-width: 768px) {
+      .consensus-describe {
+        .detail {
+          padding:0;
+          .detail-box {
+            width:100%;
+            border-right: none;
+            display:flex;
+            justify-content: space-between;
+            align-items: center;
+            padding:8px 10px;
+            border-bottom: 1px solid @table-td-bd;
+            div:first-child{
+              margin-bottom: 0;
+              text-align: left;
+            }
+            div:last-child{
+              text-align: right;
+            }
+          }
+          .detail-box3 {
+            border-right: none;
+          }
+        }
+      }
+      .consensus-list {
+        .title{
+          .title-search{
+            .search-left{
+              display:flex;
+              justify-content: space-between;
+              .el-select{
+                .el-input{
+                  width:auto;
+                }
+              }
+              .el-select:nth-child(2){
+                margin-right:0;
+              }
+            }
+            .search-right{
+              width:100%;
+              .iconfont-common-gray,.search-text{
+                display:none;
+              }
+              .iconfont-common-blue{
+                display:inline-block;
+                right:6px;
+              }
+              .search-ipt{
+                padding-left:7px;
+              }
+            }
+          }
+        }
+        .node{
+          text-align: center;
+          ul.node-box{
+            width:100%;
+            margin:0 0 10px 0;
+            padding-left:0;
+            padding-bottom:0;
+            .node-id{
+              padding-left:0;
+            }
+            li:not(.node-id){
+              padding:5px 0 5px 40px;
+              margin-bottom:0;
+              border-bottom: 1px solid @table-td-bd;
+            }
+            li.progress-li{
+              height:30px;
+              border-bottom: 0;
+              span{
+                padding-left:0;
+              }
+              .bar-bg{
+                margin-right:5px;
+              }
+            }
+          }
+          .bottom-pagination{
+            margin-top:0;
+            /*position: relative;*/
+            /*.pagination-left{*/
+              /*position: absolute;*/
+              /*top:32px;*/
+              /*left:49px;*/
+            /*}*/
+            /*.pagination-right{*/
+              /*.total{*/
+                /*position: absolute;*/
+                /*top:32px;*/
+                /*right:49px;*/
+              /*}*/
+            /*}*/
+          }
         }
       }
     }

@@ -41,3 +41,9 @@ export function serviceAddress(str) {
   const reg =  /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)/;
   return reg.test(str)
 }
+//只允许输入汉字，字母，数字
+export function chinese(str) {
+  // const reg =  /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
+  const reg =  /[^\u4e00-\u9fa5a-zA-Z0-9]/;
+  return reg.test(str)
+}

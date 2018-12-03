@@ -19,6 +19,7 @@
         </p>
       </div>
       <div class="footer-right">
+        <div class="cursor-p height-footer">{{ $t('message.height') }}{{this.heightInfo.height}}</div>
         <div class="cursor-p" @click="termsService">{{ $t('message.termsService') }}</div>
         <div class="cursor-p" @click="privacyPolicy">{{ $t('message.privacyPolicy') }}</div>
         <div class="cursor-p" @click="about">{{ $t('message.about') }}</div>
@@ -42,7 +43,8 @@
     },
     computed: {
       nodeAddress() {
-        return this.$store.getters.getNodeAddress ? this.$store.getters.getNodeAddress : 'http://testnet.apiserver.nuls.io'
+        return this.$store.getters.getNodeAddress ? this.$store.getters.getNodeAddress : 'https://apiserver.nuls.io'
+        // return this.$store.getters.getNodeAddress ? this.$store.getters.getNodeAddress : 'http://testnet.apiserver.nuls.io'
       }
     },
     created() {
@@ -159,6 +161,7 @@
     position: fixed;
     bottom: 0;
     width: 100%;
+    z-index: 2;
     .footer {
       font-size: @font-size-14;
       max-width: @width;
@@ -186,6 +189,9 @@
           /*span {*/
             /*max-width: 100px;*/
           /*}*/
+          .height-footer{
+            display:none;
+          }
           span:nth-child(4){
             padding-left:15px;
           }
@@ -201,6 +207,9 @@
         display: flex;
         justify-content: right;
         align-items: center;
+        .height-footer{
+          display:none;
+        }
         div {
           border-left: @border4;
           padding: 0 18px 0;
@@ -224,5 +233,23 @@
       }
     }
   }
-
+  @media screen and (max-width: 768px){
+    .bottom{
+      padding:10px 0;
+      .footer{
+        .footer-left1,.footer-left2{
+          display:none;
+        }
+        .footer-right{
+          justify-content: center!important;
+          .height-footer{
+            display:block;
+          }
+          div{
+            padding:0 0.25rem;
+          }
+        }
+      }
+    }
+  }
 </style>

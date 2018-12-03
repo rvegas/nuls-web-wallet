@@ -40,6 +40,15 @@ export default new Router({
       path: '/wallet/createWallet',
       name: '/createWallet',
       component: resolve => require(['@/pages/wallet/createWallet'], resolve),
+      beforeEnter: (to, from, next) => {
+        if(localStorage.getItem('address')){
+          next();
+        }else{
+          next({
+            path: '/home',
+          })
+        }
+      },
     },
     {
       path: '/wallet/importKeyCode',
@@ -55,6 +64,15 @@ export default new Router({
       path: '/wallet/freezeList',
       name: '/freezeList',
       component: resolve => require(['@/pages/wallet/freezeList'], resolve),
+      beforeEnter: (to, from, next) => {
+        if(localStorage.getItem('address')){
+          next();
+        }else{
+          next({
+            path: '/home',
+          })
+        }
+      },
     },
     /**
      * 账户
@@ -66,7 +84,16 @@ export default new Router({
       component: resolve => require(['@/pages/account/index'], resolve),
       meta: {
         keepAlive: true
-      }
+      },
+      beforeEnter: (to, from, next) => {
+        if(localStorage.getItem('address')){
+          next();
+        }else{
+          next({
+            path: '/home',
+          })
+        }
+      },
     },
     /**
      * 转账
@@ -76,16 +103,43 @@ export default new Router({
       path: '/transfer/transAccount',
       name: '/transAccount',
       component: resolve => require(['@/pages/transfer/transAccount'], resolve),
+      beforeEnter: (to, from, next) => {
+        if(localStorage.getItem('address')){
+          next();
+        }else{
+          next({
+            path: '/home',
+          })
+        }
+      },
     },
     {
       path: '/transfer/makeCollections',
       name: '/makeCollections',
       component: resolve => require(['@/pages/transfer/makeCollections'], resolve),
+      beforeEnter: (to, from, next) => {
+        if(localStorage.getItem('address')){
+          next();
+        }else{
+          next({
+            path: '/home',
+          })
+        }
+      },
     },
     {
       path: '/transfer/transDetail',
       name: '/transDetail',
       component: resolve => require(['@/pages/transfer/transDetail'], resolve),
+      beforeEnter: (to, from, next) => {
+        if(localStorage.getItem('address')){
+          next();
+        }else{
+          next({
+            path: '/home',
+          })
+        }
+      },
     },
     /**
      * 共识
@@ -97,7 +151,7 @@ export default new Router({
       component: resolve => require(['@/pages/consensus/allConsensus'], resolve),
       meta: {
         keepAlive: true
-      }
+      },
     },
     {
       path: '/consensus/myConsensus',
@@ -105,7 +159,7 @@ export default new Router({
       component: resolve => require(['@/pages/consensus/myConsensus'], resolve),
       meta: {
         keepAlive: true
-      }
+      },
     },
     {
       path: '/consensus/nodeDetail',
@@ -129,11 +183,29 @@ export default new Router({
       path: '/setting/setPassword',
       name: '/setPassword',
       component: resolve => require(['@/pages/setting/setPassword'], resolve),
+      beforeEnter: (to, from, next) => {
+        if(localStorage.getItem('address')){
+          next();
+        }else{
+          next({
+            path: '/home',
+          })
+        }
+      },
     },
     {
       path: '/setting/setAlias',
       name: '/setAlias',
       component: resolve => require(['@/pages/setting/setAlias'], resolve),
+      beforeEnter: (to, from, next) => {
+        if(localStorage.getItem('address')){
+          next();
+        }else{
+          next({
+            path: '/home',
+          })
+        }
+      },
     },
     /**
      * 其它
@@ -167,6 +239,69 @@ export default new Router({
       path: '/testNetNULS/testNetNULS',
       name: '/testNetNULS',
       component: resolve => require(['@/pages/testNetNULS/testNetNULS'], resolve),
+    },
+    //投票
+    {
+      path: '/vote/voteList',
+      name: '/voteList',
+      component: resolve => require(['@/pages/vote/voteList'], resolve),
+      meta: {
+        keepAlive: true
+      },
+      beforeEnter: (to, from, next) => {
+        if(localStorage.getItem('address')){
+          next();
+        }else{
+          next({
+            path: '/home',
+          })
+        }
+      },
+    },
+    {
+      path: '/vote/voteHistory',
+      name: '/voteHistory',
+      component: resolve => require(['@/pages/vote/voteHistory'], resolve),
+      meta: {
+        keepAlive: true
+      },
+      beforeEnter: (to, from, next) => {
+        if(localStorage.getItem('address')){
+          next();
+        }else{
+          next({
+            path: '/home',
+          })
+        }
+      },
+    },
+    {
+      path: '/vote/createVote',
+      name: '/createVote',
+      component: resolve => require(['@/pages/vote/createVote'], resolve),
+      beforeEnter: (to, from, next) => {
+        if(localStorage.getItem('address')){
+          next();
+        }else{
+          next({
+            path: '/home',
+          })
+        }
+      },
+    },
+    {
+      path: '/vote/voteDetail',
+      name: '/voteDetail',
+      component: resolve => require(['@/pages/vote/voteDetail'], resolve),
+      beforeEnter: (to, from, next) => {
+        if(localStorage.getItem('address')){
+          next();
+        }else{
+          next({
+            path: '/home',
+          })
+        }
+      },
     },
   ]
 })

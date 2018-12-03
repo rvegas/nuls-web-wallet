@@ -54,6 +54,9 @@ i.iconfont-common-green{
 i.iconfont-common-gray{
   color:@c-font-gray2-color;
 }
+i.iconfont-common-blue{
+  color:@c-font-blue1-color;
+}
 i.iconfont-20{
   font-size:20px;
 }
@@ -74,10 +77,21 @@ i.iconfont-20{
 
 /**overflow ....**/
 .overflow {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
-
+/*color yellow*/
+.yellow{
+  color:@c-font-yellow1-color;
+}
+/*color green*/
+.green{
+  color:@c-h-color;
+}
+/*color gray*/
+.gray{
+  color:@c-font-gray2-color;
+}
 /**拖动条效果**/
 &::-webkit-scrollbar {
-  width: 5px;
+  width: 3px;
   height: 5px;
 }
 &::-webkit-scrollbar-track {
@@ -149,7 +163,29 @@ input{
     text-align: center;
   }
   .main-content{
-    margin:0 auto 140px;
+    margin:20px auto 10px;
+    padding:0 10px 100px;
+  }
+  //body{
+  //  padding-bottom:100px;
+  //}
+  .center{
+    .bottom-pagination {
+      position: relative;
+      .pagination-left{
+        position: absolute;
+        top:40px;
+        left:49px;
+      }
+      .pagination-right{
+        padding-top:10px;
+        .total{
+          position: absolute;
+          top:40px;
+          right:49px;
+        }
+      }
+    }
   }
 }
 /*省略号...*/
@@ -197,13 +233,19 @@ table {
 }
 @media screen and (max-width: 768px) {
 
-  table {
+  table.table {
     border: 0;
     thead {
       display: none;
     }
       tr {
         display: block;
+        border: @border2;
+        padding:0 10px;
+        margin-bottom:10px;
+      }
+      tr:last-child{
+        margin-bottom:0;
       }
       td {
         display: block;
@@ -212,8 +254,7 @@ table {
         border-bottom: 1px solid @table-td-bd;
       }
       td:last-child {
-        border-bottom: @border2;
-        margin-bottom: 10px;
+
       }
       td:before {
         content: attr(data-label);
@@ -230,6 +271,103 @@ table {
     }
     .small-show{
       display:block;
+      margin-bottom:0;
+    }
+  }
+  .el-table {
+    thead {
+      display: table-header-group;
+    }
+    tr {
+      display: table-row;
+    }
+    td{
+      display:table-cell;
+    }
+    .cell{
+      line-height: 18px;
+    }
+    .el-checkbox-group {
+      display: inline-block;
+    }
+    .el-table__expand-column .cell {
+      display: none;
+    }
+    .el-table__header-wrapper {
+      tr {
+        background: #17202e;
+      }
+      th {
+        border-bottom: @border2;
+      }
+      th:nth-child(2) {
+        text-align: right;
+      }
+      /*th:nth-child(3){*/
+      /*text-align: left;*/
+      /*}*/
+      th:nth-child(6) > .cell {
+        z-index: -1;
+      }
+    }
+    .el-table__body-wrapper {
+      tr {
+        /*td:nth-child(3){*/
+        /*text-align: left;*/
+        /*}*/
+      }
+      .bar-bg {
+        float: none;
+        width: 70px;
+        margin-top: 0;
+        margin-right: 5px;
+        .bar {
+          label {
+            margin-top: -2px;
+            height: 6px;
+            /*margin-left: 50%;*/
+          }
+        }
+      }
+      .progress-box {
+        justify-content: start;
+      }
+      tr {
+        td{
+          height:48px;
+          line-height:48px;
+        }
+        td:last-child {
+          cursor: pointer;
+        }
+      }
+      tr.expanded {
+        td:last-child {
+          i.el-icon-arrow-down {
+            transform: rotate(180deg);
+          }
+        }
+      }
+      tr {
+        .el-table__expanded-cell {
+          .el-table {
+            .el-table__body-wrapper {
+              .el-table__body {
+                tbody {
+                  tr {
+                    td:first-child {
+                      .cell {
+                        /*width:30px;*/
+                        /*max-width:30px;*/
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -18,15 +18,15 @@
             <!--</div>-->
             <div class="flex-common">
               <div>{{$t('message.myConsensus4')}}</div>
-              <div>{{this.myConsensusInfo.depositMoney}} NULS</div>
+              <div>{{this.myConsensusInfo.totalDeposit}} NULS</div>
             </div>
             <div class="flex-common">
               <div>{{$t('message.myConsensus5')}}</div>
               <div>{{this.myConsensusInfo.usable}} NULS</div>
             </div>
             <div class="flex-common">
-              <div>{{$t('message.allConsensusInfo4')}}</div>
-              <div>{{this.myConsensusInfo.totalDeposit}} NULS</div>
+              <div>{{$t('message.myConsensus12')}}</div>
+              <div>{{this.myConsensusInfo.reward}} NULS</div>
             </div>
           </div>
         </div>
@@ -51,10 +51,10 @@
               <div>{{$t('message.allConsensusInfo4')}}</div>
               <div>{{this.allConsensusInfo.rewardOfDay}} NULS</div>
             </div>
-            <div class="flex-common">
-              <div></div>
-              <div></div>
-            </div>
+            <!--<div class="flex-common">-->
+              <!--<div></div>-->
+              <!--<div></div>-->
+            <!--</div>-->
           </div>
         </div>
       </div>
@@ -67,7 +67,8 @@
           <div class="title-right">
             <i class="icon-search iconfont iconfont-common-gray">&#xe614;</i>
             <input v-model="keyword" class="search-ipt" type="text" :placeholder="$t('message.allConsensusInfo6')">
-            <span @click="searchConsensusList('noData')">{{$t('message.allConsensusInfo7')}}</span>
+            <span @click="searchConsensusList('noData')" class="search-text">{{$t('message.allConsensusInfo7')}}</span>
+            <i class="icon-search iconfont iconfont-common-blue" @click="searchConsensusList('noData')">&#xe614;</i>
           </div>
         </div>
         <div class="no-node" v-if="lengthFlg==='0'">
@@ -161,7 +162,6 @@
         return this.$store.getters.getLang ? this.$store.getters.getLang : 'en'
       },
       lengthFlg(){
-        //0没有数据，1有数据，2查询无结果
         /**
         * 0没有数据，1有数据，2查询无结果
         * 0:no data, 1:data, 2:query no results.
@@ -170,34 +170,21 @@
       }
     },
     created() {
-      if(localStorage.hasOwnProperty('address')){
-        this.getConsensusList();
-      }
-      if(localStorage.hasOwnProperty('address')){
-        this.getMyConsensus();
-      }else{
-        this.myConsensusInfo.agentNum = '0';
-        this.myConsensusInfo.totalDeposit = '0';
-        this.myConsensusInfo.depositMoney = '0';
-        this.myConsensusInfo.usable = '0';
-      }
-      this.getAllConsensus();
     },
     mounted(){
-
-        if(localStorage.hasOwnProperty('address')){
-          this.getConsensusList();
-        }
         if(localStorage.hasOwnProperty('address')){
           this.getMyConsensus();
+          this.getConsensusList();
         }else{
           this.myConsensusInfo.agentNum = '0';
           this.myConsensusInfo.totalDeposit = '0';
           this.myConsensusInfo.depositMoney = '0';
           this.myConsensusInfo.usable = '0';
+          this.myConsensusInfo.reward = '0';
         }
         this.getAllConsensus();
-
+      this.$store.commit('setActiveNav', '3');
+      sessionStorage.setItem("activeNav", '3');
     },
     methods: {
       /**
@@ -221,11 +208,18 @@
             _this.myConsensusInfo.totalDeposit = LeftShiftEight(data.data.totalDeposit).toString();
             _this.myConsensusInfo.depositMoney = LeftShiftEight(data.data.depositMoney).toString();
             _this.myConsensusInfo.usable = LeftShiftEight(data.data.usable).toString();
+            if(_this.myConsensusInfo.reward !== 'null'){
+              _this.myConsensusInfo.reward = LeftShiftEight(data.data.reward).toString();
+            }else{
+              _this.myConsensusInfo.reward='0';
+            }
           } else {
+            console.log('getMyConsensus')
             _this.myConsensusInfo.agentNum = '0';
             _this.myConsensusInfo.totalDeposit = '0';
             _this.myConsensusInfo.depositMoney = '0';
             _this.myConsensusInfo.usable = '0';
+            _this.myConsensusInfo.reward = '0';
             _this.$message({
               message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
             });
@@ -271,10 +265,11 @@
             _this.allConsensusInfo = data.data;
             _this.allConsensusInfo.totalDeposit = LeftShiftEight(data.data.totalDeposit).toString();
             _this.allConsensusInfo.rewardOfDay = LeftShiftEight(data.data.rewardOfDay).toString();
-            for (let i in data.data.list) {
-              _this.nodeData[i].agentAddresss = (data.data.list[i].agentAddress).substr(0, 4) + '...' + (data.data.list[i].agentAddress).substr(-4);
-            }
+            // for (let i in data.data.list) {
+            //   _this.nodeData[i].agentAddresss = (data.data.list[i].agentAddress).substr(0, 4) + '...' + (data.data.list[i].agentAddress).substr(-4);
+            // }
           }else{
+            console.log('getAllConsensus')
             _this.$message({
               message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
             });
@@ -308,7 +303,7 @@
             _this.loading=false;
             _this.nodeData = data.data.list;
             _this.totalAll = data.data.total;
-            for (let i in data.data.list) {
+            for (let i=0;i<_this.nodeData.length;i++) {
               _this.nodeData[i].deposit = LeftShiftEight(data.data.list[i].deposit).toString();
               _this.nodeData[i].totalDeposit = LeftShiftEight(data.data.list[i].totalDeposit).toString();
               _this.nodeData[i].agentAddresss = (data.data.list[i].agentAddress).substr(0, 4) + '...' + (data.data.list[i].agentAddress).substr(-4);
@@ -317,6 +312,7 @@
               }
             }
           }else{
+            console.log('getConsensusList')
             _this.loading=false;
             _this.$message({
               message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
@@ -351,7 +347,7 @@
       nodeDetail(packingAddress,agentHash) {
         this.$router.push({
           name: '/nodeDetail',
-          query: {packingAddress: packingAddress,agentHash:agentHash},
+          query: {packingAddress: packingAddress,agentHash:agentHash,routerName:'myConsensus'},
         });
       }
     },
@@ -390,11 +386,14 @@
           .title-right {
             font-size: @font-size-14;
             color: @c-font-blue1-color;
+           .iconfont-common-blue{
+              display:none;
+            }
           }
         }
         .describe-box {
           border: @border1;
-          padding: 10px 50px;
+          padding: 10px 50px 0;
           div.flex-common {
             margin-bottom: 10px;
             div:nth-child(1) {
@@ -403,9 +402,6 @@
             div:nth-child(2) {
               font-size: @font-size-18;
             }
-          }
-          div.last-box {
-            margin-bottom: 0;
           }
           div.flex {
             &:last-child {
@@ -434,7 +430,14 @@
       }
       .describe.describe-right {
         .describe-box {
-          /*padding: 27px 50px;*/
+          .flex-common{
+            div:nth-child(1){
+              text-align: left;
+            }
+            div:nth-child(2){
+              text-align: right;
+            }
+          }
         }
       }
     }
@@ -555,8 +558,8 @@
               right: 4px;
             }
             .icon-text2{
-              top: 14px;
-              right: 9px;
+              top: 13px;
+              right: 8px;
             }
             .icon-status-green {
               background-position: -191px -115px;
@@ -572,6 +575,76 @@
       }
       ul.node-box:nth-child(4n) {
         margin-right: 0;
+      }
+    }
+    @media screen and (max-width: 768px) {
+      .consensus-describe{
+        .describe{
+          .describe-box{
+            padding:0;
+            div.flex-common{
+              margin:0;
+              padding:8px 5px;
+              border-bottom: 1px solid @table-td-bd;
+            }
+          }
+        }
+      }
+      .consensus-my {
+        .title{
+          text-align: left;
+          .title-left{
+            margin-bottom:5px;
+          }
+          .title-right{
+            width:100%;
+            .iconfont-common-gray,.search-text{
+              display:none;
+            }
+            .search-ipt{
+              padding-left:7px;
+            }
+            .iconfont-common-blue{
+              display:inline-block;
+              right:6px;
+            }
+          }
+        }
+        .node{
+          text-align: center;
+          ul.node-box{
+            width:100%;
+            margin:0 0 10px 0;
+            padding-left:0;
+            padding-bottom:0;
+            .node-id{
+              padding-left:0;
+            }
+            li:not(.node-id){
+              padding:5px 0 5px 40px;
+              margin-bottom:0;
+              border-bottom: 1px solid @table-td-bd;
+            }
+            li.progress-li{
+              height:30px;
+              border-bottom: 0;
+              span{
+                padding-left:0;
+              }
+              .bar-bg{
+                margin-right:5px;
+              }
+            }
+          }
+          .bottom-pagination{
+            margin-top:0;
+          }
+        }
+        .no-node {
+          .notInvolved {
+            margin-top:30px;
+          }
+        }
       }
     }
   }

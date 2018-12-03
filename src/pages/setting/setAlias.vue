@@ -236,7 +236,7 @@
         div:nth-child(2) {
           background: #17202e;
           border: @border2;
-          padding-left: 12px;
+          padding-left: 7px;
           height: 31px;
           line-height: 28px;
         }
@@ -294,6 +294,11 @@
         .text-href {
           margin: 10px 0 0;
         }
+      }
+    }
+    @media screen and (max-width: 767px) {
+      .prompt{
+        padding: 12px 12px;
       }
     }
   }

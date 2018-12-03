@@ -44,6 +44,8 @@
 </template>
 
 <script>
+  import {versions} from '@/utils/util'
+
   export default {
     methods: {
 
@@ -73,9 +75,15 @@
             message: this.$t('message.nodeError'), type: 'warning', duration: '1000'
           });
         } else {
-          this.$router.push({
-            name: '/importKeyFile'
-          });
+          if (versions().mobileVersions) {
+            this.$router.push({
+              name: '/importKeyCode'
+            });
+          } else {
+            this.$router.push({
+              name: '/importKeyFile'
+            });
+          }
         }
       }
     }
@@ -115,6 +123,9 @@
       .h5 {
         font-size: @font-size-16;
         margin: 20px 0 60px 0;
+        @media (max-width: 768px) {
+          margin: 1rem 0 1.5rem 0;
+        }
       }
 
     }
@@ -127,6 +138,7 @@
         text-align: center;
         padding: 88px 30px 118px;
         margin: auto;
+        min-height: 285px;
         &:hover {
           cursor: pointer;
           border: @border1;
@@ -140,6 +152,12 @@
         div:nth-child(2) {
           font-size: @font-size;
           color: @c-2-color;
+        }
+
+        @media (max-width: 768px) {
+          width: 18rem;
+          padding: 3rem 30px 2rem;
+          min-height: 12rem;
         }
 
       }
@@ -163,6 +181,9 @@
       font-size: @font-size-14;
       text-align: center;
       color: @c-2-color;
+      @media (max-width: 768px) {
+        margin: 2rem 0 0;
+      }
       p {
         margin-top: 10px;
       }

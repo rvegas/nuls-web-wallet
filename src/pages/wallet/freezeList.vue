@@ -4,7 +4,7 @@
       <BackBar :backTitle="$t('message.freezeListBackName')"></BackBar>
       <div class="list">
         <div class="title">{{ $t('message.freezeListTitle') }}</div>
-        <table boeder="1">
+        <table class="table">
           <thead>
           <tr>
             <th>{{$t('message.transType')}}</th>

@@ -1,7 +1,7 @@
 <template>
   <div class="main-content">
     <div class="center node-detail">
-      <BackBar :backTitle="$t('message.nodeDetailBackName')"></BackBar>
+      <BackBar :backTitle="$t('message.nodeDetailBackName')" :backUrl="this.$route.query.routerName==='allConsensus' ? '/allConsensus' : '/myConsensus'"></BackBar>
       <h1>{{nodeInfo.agentId}}</h1>
       <div class="node-basic-info">
         <div class="title">
@@ -12,15 +12,15 @@
           <ul class="detail-ul-left">
             <li>
               <span>{{$t('message.nodeDetail3')}}</span>
-              <span>{{nodeInfo.agentAddress}}</span>
+              <span class="address">{{nodeInfo.agentAddress}}</span>
             </li>
             <li>
               <span>{{$t('message.nodeDetail4')}}</span>
-              <span>{{nodeInfo.rewardAddress}}</span>
+              <span class="address">{{nodeInfo.rewardAddress}}</span>
             </li>
             <li>
               <span>{{$t('message.nodeDetail5')}}</span>
-              <span>{{nodeInfo.packingAddress}}</span>
+              <span class="address">{{nodeInfo.packingAddress}}</span>
             </li>
             <li>
               <span>{{$t('message.nodeDetail20')}}</span>
@@ -34,10 +34,11 @@
               <span>{{$t('message.allConsensusInfo13')}}</span>
               <!--<ProgressBar :colorData="nodeInfo.creditValue < 0 ? '#f64b3e':'#82bd39'"-->
               <!--:widthData="nodeInfo.creditValue < 0 ? (nodeInfo.creditValue+1)/50 +'%': nodeInfo.creditValue === 0 ? '50%':(nodeInfo.creditValue+1)/50 +'%'"></ProgressBar>-->
-              <ProgressBar :colorData="nodeInfo.creditValue <=0 ? '#f64b3e':'#82bd39'"
-                           :widthData="nodeInfo.creditValue< 0 ? nodeInfo.creditValue*(-50)+'%':nodeInfo.creditValue*100+'%'"></ProgressBar>
+              <span>
+                <ProgressBar :colorData="nodeInfo.creditValue <=0 ? '#f64b3e':'#82bd39'"
+                             :widthData="nodeInfo.creditValue< 0 ? nodeInfo.creditValue*(-50)+'%':nodeInfo.creditValue*100+'%'"></ProgressBar>
               <span>{{this.nodeInfo.creditValue}}</span>
-
+              </span>
             </li>
           </ul>
           <ul class="detail-ul-right">
@@ -94,7 +95,7 @@
         </div>
       </div>
       <div class="join-after" v-show="!join && userAddressFlg">
-        <div class="title flex">
+        <div class="title flex-common">
           <div class="title-left">
             <i class="icon-node3 icon-common"></i>
             <span>{{$t('message.nodeDetail12')}}</span>
@@ -104,7 +105,7 @@
           </div>
         </div>
         <div class="join-after-box" v-loading="loading2">
-          <table boeder="1">
+          <table class="table">
             <thead>
             <tr>
               <th>{{$t('message.sort0')}}</th>
@@ -243,6 +244,7 @@
           ],
         },
         nodeDetailSetInterval:null,
+        nodeDetailSetInterval2:null,
         /**
         * 点击退出时，当前行的索引值
         * Index value of current row when clicking exit
@@ -271,33 +273,37 @@
         this.getMyAgentNodeList();
         this.getAccountBalance(localStorage.getItem('address'));
       }
+      if(this.$route.name === '/nodeDetail' || this.$route.name === '/myConsensus' || this.$route.name === '/allConsensus'){
+        this.$store.commit('setActiveNav', '3');
+        sessionStorage.setItem("activeNav", '3');
+      }
     },
     mounted() {
       this.nodeDetailSetInterval = setInterval(() => {
-        //this.$store.commit('setExitFlg',-1);
-        if(this.nodeList.length > 0){
-          this.pageNumber=1;
-          if(localStorage.hasOwnProperty('address')){
+        if(this.$route.name === '/nodeDetail'){
+          //this.getNodeInfo();
+          if(localStorage.hasOwnProperty('address') && !this.join){
             this.getMyAgentNodeList();
             this.getAccountBalance(localStorage.getItem('address'));
           }
+        }else{
+          clearInterval(this.nodeDetailSetInterval);
         }
-        this.getNodeInfo();
       }, 10000);
     },
     destroyed() {
-      clearInterval(this.nodeDetailSetInterval)
+      //clearInterval(this.nodeDetailSetInterval)
     },
     methods: {
-
       /**
        * 获取节点详情
        * Get node info
        */
       getNodeInfo() {
         let _this = this;
-        nulsJs.getConsensusAgentDetail({"address": this.$route.query.packingAddress}, function (data) {
+        nulsJs.getConsensusAgentDetail({"address": _this.$route.query.packingAddress}, function (data) {
           //console.log(data);
+          console.log(_this.$route.query.packingAddress);
           if (data.success) {
             _this.agentHash = data.data.txHash;
             _this.nodeInfo = data.data;
@@ -345,9 +351,13 @@
                     }
                   }
             }
-            if (data.data.list.length === 0) {
-              _this.join = true;
-            }
+            // if( !_this.join){
+              if (data.data.list.length === 0) {
+                _this.join = true;
+              }else{
+                _this.join = false;
+              }
+            // }
           }else{
             _this.$message({
               message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
@@ -483,8 +493,19 @@
                 }
               }
             }
-            _this.join = false;
+            if(_this.nodeList.length>0){
+              _this.join = false;
+            }else{
+              _this.nodeDetailSetInterval2 = setInterval(() => {
+                if(localStorage.hasOwnProperty('address') && _this.nodeList.length===0){
+                  _this.getMyAgentNodeList();
+                }else{
+                  clearInterval(_this.nodeDetailSetInterval2);
+                }
+              }, 10000);
+            }
             _this.nodeForm.bond='';
+            _this.addConsensusFee=0;
             _this.$message({
               message: _this.$t('message.success'), type: 'success', duration: '1000'
             });
@@ -507,6 +528,7 @@
         this.outTxHash = txHash;
         this.$refs.password.showPassword(true);
         this.rowIndex=index;
+        this.getMyAgentNodeList();
       },
       /**
        * 累计奖励跳转
@@ -518,6 +540,7 @@
       },
     },
     beforeRouteLeave(to, from, next) {
+      clearInterval(this.nodeDetailSetInterval);
       if(to.name ==='/myConsensus'||to.name ==='/allConsensus'){
         to.meta.keepAlive = true;
       }else {
@@ -583,7 +606,7 @@
             margin-bottom: -10px;
             justify-content: start;
             .bar-bg {
-              margin-top: 5px;
+              margin-top: 9px;
             }
           }
         }
@@ -611,8 +634,8 @@
             right: 4px;
           }
           .icon-text2{
-            top: 14px;
-            right: 9px;
+            top: 13px;
+            right: 8px;
           }
           .icon-status-green {
             background-position: -191px -115px;
@@ -704,7 +727,10 @@
               .el-button:nth-child(1) {
                 margin-right: 84px;
               }
-              @media screen and (max-width: 420px) {
+              @media screen and (max-width: 767px) {
+                .el-button {
+                  width: 110px;
+                }
                 .el-button:nth-child(1) {
                   margin-right: 0;
                 }
@@ -747,6 +773,71 @@
         }
         .bottom-pagination {
           margin: 10px 15px 0;
+        }
+      }
+    }
+    @media screen and (max-width: 768px) {
+      .node-basic-info {
+        .detail {
+          padding: 19px 10px 0 5px;
+          ul {
+            li {
+              display:flex;
+              justify-content: space-between;
+              border-bottom: 1px solid @table-td-bd;
+              margin-bottom:0;
+              padding:8px 0;
+              font-size: @font-size-14;
+              span:nth-child(1){
+                text-align: left;
+                width:auto;
+              }
+              span.address{
+                width:200px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+          }
+          ul.detail-ul-left {
+            margin-bottom:12px;
+            .bar-bg {
+              width: 110px;
+              margin-right: 5px;
+            }
+            li:last-child{
+              justify-content: space-between;
+            }
+          }
+          ul.detail-ul-right{
+            margin-bottom:0;
+          }
+        }
+      }
+      .join-after{
+        .title{
+          .title-right{
+            margin-right:0;
+          }
+        }
+      }
+      .join-before{
+        .join-before-box{
+          padding: 50px 10px 40px;
+          .join-before-box-main {
+            .el-form {
+              .el-form-item {
+                .el-form-item__label {
+                  width: 75px;
+                }
+              }
+              .poundage {
+                span:nth-child(1) {
+                  width: 75px;
+                }
+              }
+            }
+          }
         }
       }
     }

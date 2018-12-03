@@ -67,6 +67,7 @@
         } /*else if (!address(value)) {
           callback(new Error(this.$t('message.transAccountError2')))
         }*/else {
+          this.$refs.transferForm.validateField('fees');
           callback()
         }
       };
@@ -80,6 +81,7 @@
         }else if(Number(value) > Number(this.addressUsable)){
           callback(new Error(this.$t('message.noMoney1')))
         }else {
+          this.$refs.transferForm.validateField('fees');
           callback()
         }
       };
@@ -381,7 +383,7 @@
         }
       }
       .el-form-item:nth-child(3) {
-        margin-top: 10px;
+        /*margin-top: 10px;*/
         .el-form-item__content {
           position: relative;
           .text-length {
@@ -389,7 +391,7 @@
             position: absolute;
             bottom: 10px;
             right: 12px;
-            font-size: 12px;
+            font-size: @font-size;
           }
           .el-textarea {
             .el-textarea__inner {
@@ -461,7 +463,32 @@
         color: #88baff;
       }
     }
-
+    @media screen and (max-width: 768px) {
+      h1 {
+        margin-bottom: 10px;
+      }
+      .el-form{
+        .custom-fee {
+          .size {
+            color: #ccd5e4;
+            position: absolute;
+            top: 32px;
+            right: 0;
+            font-size: @font-size-14;
+          }
+          .fee {
+            position: absolute;
+            bottom: -50px;
+            left:0;
+            font-size: @font-size-16;
+          }
+        }
+        .switch {
+          text-align: left;
+          color: #88baff;
+        }
+      }
+    }
   }
 
 </style>

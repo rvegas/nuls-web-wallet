@@ -2,17 +2,22 @@
   <div class="main-content">
     <div class="center create-account">
       <h3 class="h3" v-show="this.$route.query.isNew===true">{{ $t('message.createWalletTitle1') }}</h3>
-      <h3 class="h3">{{ $t('message.createWalletTitle2') }}<span>{{this.address}}</span>
-        <i class="icon-copy iconfont iconfont-common-white cursor-p" @click="accountCopy(address)">&#xe60f;</i>
+      <h3 class="h3">
+        <span>{{ $t('message.createWalletTitle2') }}</span>
+        <span class="address-box">
+          <span>{{this.address}}</span>
+          <i class="icon-copy iconfont iconfont-common-white cursor-p" @click="accountCopy(address)">&#xe60f;</i>
+        </span>
       </h3>
-      <div class="backups cursor-p" @click="keystoreBackups">
+      <div class="backups cursor-p" @click="keystoreBackups" v-show="!this.mobileVersions.mobileVersions">
         <h4>Keystore{{ $t('message.createWalletBackups') }}</h4>
         <p class="backups-text1 text-href">{{ $t('message.createWalletDownload1') }}.keystore{{
           $t('message.createWalletDownload2') }}</p>
         <p class="backups-text2 text-href">{{ $t('message.createWalletDownload3') }}</p>
       </div>
-      <div class="text-href" @click="keyBackups">{{ $t('message.createWalletBackupsKey') }}</div>
+      <div class="text-href web-backups" @click="keyBackups">{{ $t('message.createWalletBackupsKey') }}</div>
       <div class="bt-bottom">
+        <el-button type="primary" @click="keyBackups" class="mobile-backups">{{$t('message.createWalletBackupsKey')}}</el-button>
         <el-button type="primary" @click="finishBackupsVisible = true" class="finish-btn">{{
           $t('message.createWalletBtn1') }}
         </el-button>
@@ -29,7 +34,8 @@
           </div>
           <div class="key-info">{{this.inputKey}}</div>
           <div class="btn-copy">
-            <el-button type="primary" @click="accountCopy(inputKey)">{{ $t('message.copy') }}</el-button>
+            <el-button type="primary" @click="accountCopy(inputKey)" :type="keyBackupsFlg ? '':'primary'">{{ $t('message.copy') }}</el-button>
+            <el-button @click="finishBackupsVisible = true" class="finish-btn-mobile" :type="keyBackupsFlg ? 'primary':''">{{ $t('message.createWalletBtn1') }}</el-button>
           </div>
         </div>
       </el-dialog>
@@ -51,7 +57,7 @@
 <script>
   import Password from '@/components/PasswordBar.vue'
   import nulsJs from 'nuls-jssdk'
-  import {copys} from '@/utils/util'
+  import {copys,versions} from '@/utils/util'
 
   export default {
     data() {
@@ -60,10 +66,17 @@
         address: localStorage.getItem('address'),
         inputKey: '',
         finishBackupsVisible: false,
+        mobileVersions: true,
+        //手机打开时，点击复制的标志
+        keyBackupsFlg: false,
       }
     },
     components: {
       Password,
+    },
+    mounted(){
+      this.mobileVersions=versions();
+     // console.log(this.mobileVersions.mobileVersions)
     },
     methods: {
 
@@ -72,25 +85,32 @@
        * Backups keystore
        **/
       keystoreBackups() {
+        let mobileVersions=versions();
         let _this = this;
-        nulsJs.getAlias({"address": localStorage.getItem('address')}, function (data) {
-          //console.log(data);
-          if (data.success) {
-            localStorage.setItem('addressAlias', data.data.alias);
-            _this.$store.commit('setAddressAlias', data.data.alias);
-            let keystoreInfo = '{"address":"' + localStorage.getItem("address") +
-              '","encryptedPrivateKey":"' + localStorage.getItem("encryptedPrivateKey") +
-              '","alias":"' + data.data.alias +
-              '","pubKey":"' + localStorage.getItem("pubKey") +
-              '","prikey":"null"}';
-            let keystoreName = localStorage.getItem("address") + ".keystore";
-            _this.keystoreFiles(keystoreInfo, keystoreName);
-          }else{
-            _this.$message({
-              message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
-            });
-          }
-        });
+        if(!this.mobileVersions.mobileVersions){
+          nulsJs.getAlias({"address": localStorage.getItem('address')}, function (data) {
+            //console.log(data);
+            if (data.success) {
+              localStorage.setItem('addressAlias', data.data.alias);
+              _this.$store.commit('setAddressAlias', data.data.alias);
+              let keystoreInfo = '{"address":"' + localStorage.getItem("address") +
+                '","encryptedPrivateKey":"' + localStorage.getItem("encryptedPrivateKey") +
+                '","alias":' + data.data.alias +
+                ',"pubKey":"' + localStorage.getItem("pubKey") +
+                '","prikey":"null"}';
+              let keystoreName = localStorage.getItem("address") + ".keystore";
+              _this.keystoreFiles(keystoreInfo, keystoreName);
+            }else{
+              _this.$message({
+                message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
+              });
+            }
+          });
+        }else{
+          _this.$message({
+            message: _this.$t('message.mobileVersionsTip'), type: 'warning', duration: '1000'
+          });
+        }
       },
 
       /**
@@ -154,6 +174,7 @@
        * copy
        **/
       accountCopy(info) {
+        this.keyBackupsFlg=true;
         copys(info);
         this.$message({
           message: this.$t('message.copyS'), type: 'success', duration: '1000'
@@ -186,13 +207,15 @@
     }
     h3:nth-child(2) {
       margin-bottom: 72px;
-      span {
-        color: @c-font-yellow1-color;
-        padding-right: 10px;
-      }
-      .icon-copy {
-        height: 18px;
-        background-position: -176px -60px;
+      .address-box{
+        span {
+          color: @c-font-yellow1-color;
+          padding-right: 10px;
+        }
+        .icon-copy {
+          height: 18px;
+          background-position: -176px -60px;
+        }
       }
     }
     .backups {
@@ -219,6 +242,9 @@
       }
     }
     .bt-bottom {
+      .mobile-backups{
+        display:none;
+      }
       .el-button--primary {
         width: @bt-width*2.5;
         margin-top: 48px;
@@ -226,6 +252,7 @@
       }
       .el-button {
         width: @bt-width*2.5;
+        margin-left:0;
       }
       .sure-btn {
         margin-left: -4px;
@@ -238,7 +265,7 @@
         max-width: 665px;
         min-width: 320px;
         .el-dialog__header {
-          display: none;
+          /*display: none;*/
         }
         .el-dialog__body {
           padding:0;
@@ -267,6 +294,16 @@
               text-align: center;
               .el-button {
                 width: @bt-width*2.5;
+              }
+            }
+            .finish-btn-mobile{
+              display:none;
+            }
+            @media screen and (max-width: 768px) {
+              .btn-copy {
+                .el-button {
+                  width: @bt-width*2;
+                }
               }
             }
           }
@@ -305,6 +342,47 @@
                 .el-button:first-child {
                   margin-right: 0;
                 }
+              }
+            }
+          }
+        }
+      }
+    }
+    @media screen and (max-width: 768px) {
+      h3:nth-child(2) {
+        .address-box{
+          display:block;
+          span {
+            font-size: @font-size-14;
+            padding-right: 10px;
+          }
+        }
+      }
+      .web-backups{
+        display:none;
+      }
+      .bt-bottom{
+        .mobile-backups{
+          display:inline-block;
+        }
+        .finish-btn{
+          display:none;
+        }
+      }
+      .key-wrapper{
+        .el-dialog--center{
+          padding:20px 10px;
+          .el-dialog__header{
+            display:none;
+          }
+          .el-dialog__body{
+            .key-dialog{
+              .el-button{
+                margin-bottom:10px;
+              }
+              .finish-btn-mobile{
+                display:inline-block;
+                margin-left:0;
               }
             }
           }

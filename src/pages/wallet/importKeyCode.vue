@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <div class="center import-key-code">
+    <div class="center import-key-code" v-loading="loading">
       <h1 class="h1">{{ $t('message.importKeyCode') }}</h1>
       <el-form :model="importKeyForm" :rules="importKeyRules" ref="importKeyForm">
         <el-form-item :label="$t('message.importKeyCodeLabel1')" prop="keyInfo">
@@ -94,7 +94,8 @@
         * 服务条款及隐私条款 默认隐藏
         * The terms of service and privacy clauses are hidden by default.
         * */
-        clauseDialog: false
+        clauseDialog: false,
+        loading: false,
       };
     },
     methods: {
@@ -115,11 +116,13 @@
         let _this = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            _this.loading=true;
             const params = {"pri": _this.importKeyForm.keyInfo, "types": false, "pass": _this.importKeyForm.pass,"pub":''};
             //console.log(params);
             nulsJs.importWallet(params, function (data) {
               //console.log(data);
               if (data.success) {
+                _this.loading=false;
                 localStorage.setItem('pubKey', data.data.pub);
                 localStorage.setItem("address", data.data.address);
                 _this.$store.commit('setAddress', data.data.address);
@@ -132,6 +135,7 @@
                   name: '/account',
                 })
               } else {
+                _this.loading=false;
                 _this.$message({
                   message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
                 });
@@ -174,6 +178,9 @@
     h1 {
       margin-bottom: 40px;
       font-size: @font-size-20;
+      @media (max-width: 768px) {
+        margin: 1.5rem 0;
+      }
     }
     .prompt {
       width: 472px;
@@ -231,6 +238,9 @@
           .el-checkbox-group {
             .el-checkbox {
               color: @c-color;
+              .el-checkbox__input{
+
+              }
             }
           }
           div {
@@ -244,6 +254,9 @@
             position: initial;
             margin-top: 0;
             margin-left: 0;
+            @media (max-width: 768px) {
+              line-height: 1.5rem;
+            }
           }
         }
       }

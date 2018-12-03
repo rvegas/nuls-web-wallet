@@ -19,7 +19,10 @@ const state = {
    * 节点地址
    * Node address
    * */
-  nodeAddress: 'http://testnet.apiserver.nuls.io',
+  nodeAddress: 'https://apiserver.nuls.io',
+  //  nodeAddress: 'http://50.62.6.187:8005',
+  // nodeAddress: 'http://testnet.apiserver.nuls.io',
+  // nodeAddress: 'https://apiserver.baota.io',
   //节点地址延迟
   /**
    * 节点地址延迟
@@ -65,8 +68,9 @@ const state = {
    * 跳转区块链浏览器地址
    * To block chain browser
    * */
-  browserAddress: 'http://testnet.nulscan.io',
-  //browserAddress: 'https://nulscan.io/',
+  // browserAddress: 'http://192.168.1.130:8088/',
+  // browserAddress: 'http://testnet.nulscan.io/',
+  browserAddress: 'https://nulscan.io/',
   //browserAddress: 'http://192.168.1.118:9001/',
 };
 

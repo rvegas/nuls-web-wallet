@@ -4,13 +4,13 @@
       <BackBar :backTitle="$t('message.back')"></BackBar>
       <div class="infos" v-if="this.language==='cn'">
         <h1>关于</h1>
-        <h2>当前版本：0.9.1</h2>
+        <h2>当前版本：0.9.2</h2>
         <p class="paragraph">NULS网页版轻钱包无需同步所有区块数据，且私钥加密存储在本地设备上，具有极高的安全性。除不能创建共识节点外，NULS网页版轻钱包具备全节点钱包的创建/导入账户、转账、委托/退出委托等主要功能，轻便、易用。</p>
       </div>
 
       <div class="infos infos-en" v-else-if="this.language==='en'">
         <h1>About</h1>
-        <h2>Version:0.9.1</h2>
+        <h2>Version:0.9.2</h2>
         <p class="paragraph">It’s not necessary to synchronize all block data in NULS website wallet and the private key will be encrypted and stored on local devices, which makes it very safe. Except creating consensus nodes, NULS website wallet has major functions including creating/importing accounts, transferring, delegation/ canceling delegation among others of a full-node wallet. It is portable and easy to use.
         </p>
       </div>

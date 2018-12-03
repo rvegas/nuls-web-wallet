@@ -3,11 +3,14 @@
     <div class="center account-index">
       <h3 class="h3">
         <span>{{$t('message.index1')}}：{{ this.addressAlias !== "null" ? this.addressAlias : $t('message.index2')}}</span>
-        <i class="iconfont iconfont-common-white cursor-p" v-show="this.addressAlias !== 'null' ? false : true" @click="toSetAlias">&#xe61f;</i>
+        <i class="iconfont iconfont-common-white cursor-p" v-show="this.addressAlias !== 'null' ? false : true"
+           @click="toSetAlias">&#xe61f;</i>
       </h3>
-      <h3 class="h3">{{$t('message.index3')}}：<span>{{this.address}}</span>
-        <i class="iconfont iconfont-common-white cursor-p" @click="accountCopy(address)">&#xe60f;</i>
-        <i class="iconfont iconfont-common-white cursor-p" @click="qrCode">&#xe61c;</i>
+      <h3 class="h3">
+        <span>{{$t('message.index3')}}：</span>
+        <span>{{this.address}}</span>
+        <i class="iconfont iconfont-common-white cursor-p icon-copy" @click="accountCopy(address)">&#xe60f;</i>
+        <i class="iconfont iconfont-common-white cursor-p icon-code" @click="qrCode">&#xe61c;</i>
       </h3>
       <div class="account-property">
         <div class="title">
@@ -15,7 +18,7 @@
           <span>{{$t('message.index4')}}</span>
         </div>
         <div class="table-box">
-          <table boeder="1">
+          <table class="table">
             <thead>
             <tr>
               <th>{{$t('message.index5')}}</th>
@@ -49,7 +52,7 @@
           <div class="search-left">
             <el-select v-model=typeValue :placeholder="$t('message.type0')" @change="selectType">
               <el-option v-for="item in typeOptions" :label="$t('message.type'+item.key)" :value="item.key"
-                         :key="item.value" >
+                         :key="item.value">
               </el-option>
             </el-select>
             <el-select v-model="statusValue" :placeholder="$t('message.statusS1')" @change="selectStatus">
@@ -59,20 +62,29 @@
             </el-select>
           </div>
           <div class="search-right">
-            <div>{{$t('message.index17')}}</div>
+            <div class="date-text">{{$t('message.index17')}}</div>
+
             <el-date-picker
-              v-model="timeValue"
-              @change="changeTime"
-              type="daterange"
-              align="right"
-              unlink-panels>
+              v-model="startTime"
+              type="date"
+              :placeholder="$t('message.createVote18')"
+              :picker-options="startDatePicker"
+              @change="changeTime">
             </el-date-picker>
+            <span class="date-line">—</span>
+              <el-date-picker
+                v-model="endTime"
+                type="date"
+                :placeholder="$t('message.createVote19')"
+                :picker-options="endDatePicker"
+                @change="changeTime">
+              </el-date-picker>
             <div class="search-btn">
               <el-button type="primary" @click="emptyAll">{{$t('message.index20')}}</el-button>
             </div>
           </div>
         </div>
-        <table boeder="1">
+        <table class="table">
           <thead>
           <tr>
             <th>{{$t('message.index13')}}</th>
@@ -82,7 +94,7 @@
             <th>{{$t('message.index16')}}</th>
           </tr>
           </thead>
-          <tbody v-if="txList.length!=0">
+          <tbody v-if="txList.length!==0">
           <tr v-for="item in txList">
             <td :data-label="$t('message.index13')">{{ $t('message.type'+item.type) }}</td>
             <td data-label="TxID" v-if="item.state===1" class="text-href" @click="transDetail(item.hash,item.state)">{{item.hashs}}</td>
@@ -92,7 +104,7 @@
             <td :data-label="$t('message.index16')">{{$t('message.statusS'+item.state)}}</td>
           </tr>
           </tbody>
-          <tbody v-else>
+          <tbody v-else v-loading="loading">
           <tr class="big-show">
             <td colspan="5" class="no-data">{{ $t('message.noData') }}</td>
           </tr>
@@ -112,7 +124,8 @@
           </div>
           <div class="pagination-right flex">
             <!--<span class="first">首页</span>-->
-            <el-pagination layout="prev, pager, next" :page-size="8" :total=this.totalAll class="cb" background :current-page.sync="pageNumber"
+            <el-pagination layout="prev, pager, next" :page-size="8" :total=this.totalAll class="cb" background
+                           :current-page.sync="pageNumber"
                            v-show="totalAllOk = this.totalAll > 8 ? true : false"
                            @current-change="txListPages">
             </el-pagination>
@@ -138,72 +151,89 @@
   export default {
     data() {
       return {
+
         /**
-        * 地址
-        * address
-        * */
+         * 地址
+         * address
+         * */
         address: localStorage.getItem('address'),
         //addressAlias: localStorage.getItem('addressAlias'),
+
         /**
-        * 二维码弹框
-        * Two dimensional code box
-        * */
+         * 二维码弹框
+         * Two dimensional code box
+         * */
         codeDialogVisible: false,
+
         /**
-        * 账号资产
-        * Account assets
-        * */
+         * 账号资产
+         * Account assets
+         * */
         userInfo: {
           balance: 0,
           locked: 0,
           usable: 0,
         },
+
         /**
-        * 交易记录list
-        * Transaction record list
-        * */
+         * 交易记录list
+         * Transaction record list
+         * */
         txList: [],
         txAllList: [],
         txHashList: [],
         totalAll: 0,
         pageNumber: 1,
         pageSize: 8,
+
         /**
-        * 交易类型
-        * Type of transaction
-        * */
-        typeOptions: [{key: 0,}, {key: 1,}, {key: 2,}, {key: 3,}, {key: 4,}, {key: 5,}, {key: 6,}, {key: 7,}, {key: 8,}, {key: 9,}, {key: 100,},{key: 101,}, {key: 102,}, {key: 103,}],
+         * 交易类型
+         * Type of transaction
+         * */
+        typeOptions: [{key: 0,}, {key: 1,}, {key: 2,}, {key: 3,}, {key: 4,}, {key: 5,}, {key: 6,}, {key: 7,}, {key: 8,}, {key: 9,}, {key: 100,}, {key: 101,}, {key: 102,}, {key: 103,}],
         typeValue: 0,
+
         /**
-        * 交易状态
-        * Trading state
-        * */
+         * 交易状态
+         * Trading state
+         * */
         statusOptions: [{key: 0}, {key: 1}],
         statusValue: 1,
+
         /**
-        * 日期插件
-        * Date plug-in
-        * */
-        timeValue: [new Date(Date.parse(new Date())-7 * 24 * 3600 * 1000), new Date(Date.parse(new Date())+23 * 3600 * 1000)],
+         * 日期插件
+         * Date plug-in
+         * */
+        startTime: new Date(Date.parse(new Date()) - 7 * 24 * 3600 * 1000),
+        endTime: new Date(Date.parse(new Date()) + 24 * 3600 * 1000),
+        startDatePicker:this.beginDate(),
+        endDatePicker:this.processDate(),
+        //timeValue: [new Date(Date.parse(new Date()) - 7 * 24 * 3600 * 1000), new Date(Date.parse(new Date()) + 23 * 3600 * 1000)],
+
         /**
-        * 定时器
-        * timer
-        * */
+         * 定时器
+         * timer
+         * */
         homeSetInterval: null,
+        homeSetInterval2: null,
+        loading: true,
       }
     },
     computed: {
-      addressAlias () {
+      addressAlias() {
         return this.$store.getters.getAddressAlias ? this.$store.getters.getAddressAlias : 'null';
       },
     },
     created() {
-      this.pageNumber=1;
-      this.getAddressInfo();
-      this.getAddressTxList();
-      this.getAlias();
+
     },
     mounted() {
+      this.pageNumber = 1;
+      if(localStorage.hasOwnProperty('address')){
+        this.getAddressInfo();
+        this.getAddressTxList();
+        this.getAlias();
+      }
       this.homeSetInterval = setInterval(() => {
         if(localStorage.hasOwnProperty('address')){
           this.getAddressInfo();
@@ -212,10 +242,27 @@
         }
       }, 10000);
     },
-    destroyed() {
-      clearInterval(this.homeSetInterval);
-      this.homeSetInterval = null;
+    activated(){
+      if(localStorage.hasOwnProperty('address')){
+        this.getAddressInfo();
+        this.getAddressTxList();
+        this.getAlias();
+      }
+      this.homeSetInterval2 = setInterval(() => {
+        if (localStorage.hasOwnProperty('address')) {
+          this.getAddressInfo();
+          this.getAddressTxList();
+          this.getAlias();
+        }
+      }, 10000);
     },
+    deactivated: function () {
+      clearInterval(this.homeSetInterval);
+      clearInterval(this.homeSetInterval2);
+    },
+    // destroyed() {
+    //   clearInterval(this.homeSetInterval);
+    // },
     methods: {
 
       /**
@@ -230,17 +277,18 @@
           "pageNumber": this.pageNumber,
           "pageSize": this.pageSize,
           "type": this.typeValue,
-          "startTime": this.timeValue ? Date.parse(this.timeValue[0]) : '',
-          "endTime": this.timeValue ? Date.parse(this.timeValue[1]) : ''
+          "startTime":this.startTime ? Date.parse(this.startTime):'',
+          "endTime": this.endTime ? Date.parse(this.endTime)+ 24 * 3600 * 1000:''
         };
         //console.log(params);
         if (this.statusValue === 0) {
           nulsJs.getWebwalletTxByAddress(params, function (data) {
             //console.log(data);
             if (data.success) {
+              _this.loading = false;
               _this.txList = data.data.list;
               _this.totalAll = data.data.total;
-              for (let i in data.data.list) {
+              for (let i=0;i<data.data.list.length;i++) {
                 if(data.data.list[i].type.toString() ==='4'||data.data.list[i].type.toString() ==='5'){
                   data.data.list[i].amount = "lock"+LeftShiftEight(data.data.list[i].amount).toString();
                 }else if(data.data.list[i].type.toString() ==='6' || data.data.list[i].type.toString() ==='9'){
@@ -253,6 +301,8 @@
                 data.data.list[i].state = 0;
               }
             }else{
+              _this.loading = false;
+              console.log('getWebwalletTxByAddress');
               _this.$message({
                 message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
               });
@@ -262,9 +312,11 @@
           nulsJs.getTxListByAddress(params, function (data) {
           //console.log(data);
             if (data.success) {
+              _this.loading = false;
               _this.txList = data.data.list;
               _this.totalAll = data.data.total;
-              for (let i in data.data.list) {
+              for (let i=0;i<data.data.list.length;i++) {
+              // for (let i in data.data.list) {
                 if(data.data.list[i].type.toString() ==='4'||data.data.list[i].type.toString() ==='5'){
                   data.data.list[i].amount = "lock"+LeftShiftEight(data.data.list[i].amount).toString();
                 }else if(data.data.list[i].type.toString() ==='6' || data.data.list[i].type.toString() ==='9'){
@@ -277,6 +329,8 @@
                 data.data.list[i].state = 1;
               }
             }else{
+              _this.loading = false;
+              console.log('getTxListByAddress');
               _this.$message({
                 message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
               });
@@ -299,6 +353,7 @@
             _this.userInfo.locked = LeftShiftEight(data.data.locked).toString();
             _this.userInfo.usable = LeftShiftEight(data.data.usable).toString();
           }else{
+            console.log('index')
             _this.$message({
               message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
             });
@@ -347,7 +402,8 @@
       emptyAll() {
         this.typeValue = '';
         this.statusValue = '';
-        this.timeValue = '';
+        this.startTime = '';
+        this.endTime = '';
         this.getAddressTxList();
       },
 
@@ -463,17 +519,44 @@
             }
           });
         }
-      }
+      },
+      beginDate(){
+        return {
+          disabledDate(time){
+            return new Date().getTime() < time.getTime()
+          }
+        }
+      },
+      /**
+      * 结束时间必须大于开始时间
+      * End time must be greater than start time
+      * */
+      processDate(){
+        let _this = this;
+        return {
+          disabledDate(time){
+            if(_this.startTime){
+              // return new Date(_this.createVoteForm.startTime).getTime() > time.getTime() || time.getTime() > Date.now()
+              return new Date(_this.startTime).getTime()-23 * 3600 * 1000 > time.getTime() || new Date().getTime() < time.getTime();
+            }else{
+              return new Date().getTime() < time.getTime()
+            }
+          }
+        }
+      },
     },
-    // beforeRouteEnter(to, from, next) {
-    //   if(from.name ==='/transDetail'){
-    //     to.meta.keepAlive = true;
-    //   }else{
-    //     to.meta.keepAlive = false;
-    //   }
-    //   next();
-    // },
+    beforeRouteEnter(to, from, next) {
+      if(from.name ==='/transDetail'){
+        to.meta.keepAlive = true;
+      }else{
+        to.meta.keepAlive = false;
+      }
+      next();
+    },
     beforeRouteLeave(to, from, next) {
+      //清除定时器 Clear timer
+      clearInterval(this.homeSetInterval);
+      clearInterval(this.homeSetInterval2);
       if(to.name ==='/transDetail'){
         from.meta.keepAlive = true;
       }else {
@@ -504,17 +587,9 @@
     }
     h3:nth-child(2) {
       margin-bottom: 20px;
-      span {
+      span:nth-child(2) {
         color: @c-font-yellow1-color;
         padding-right: 10px;
-      }
-      .icon-copy {
-        vertical-align: baseline;
-      }
-      .icon-qr {
-        height: 16px;
-        background-position: -272px -26px;
-        vertical-align: baseline;
       }
     }
     .account-property {
@@ -587,19 +662,31 @@
           }
         }
         .search-right {
-          position: relative;
+          /*position: relative;*/
+          display:flex;
+          justify-content: start;
+          align-items: center;
           div:nth-child(1) {
             display: inline-block;
+            margin-right:5px;
+            font-size: @font-size-14;
+          }
+          .date-line{
+            margin:0 8px;
           }
           .el-date-editor {
             background: @bg-color;
             border: none;
-            width: 260px;
-            margin-right: 20px;
-            .el-range-separator {
+            width: 150px;
+            .el-input__inner{
+              height: 34px;
               line-height: 34px;
-              width: 7%;
             }
+
+            /*.el-range-separator {*/
+              /*line-height: 34px;*/
+              /*width: 7%;*/
+            /*}*/
             .el-input__icon {
               display: none;
               &:after {
@@ -628,27 +715,28 @@
             }
           }
           .search-btn {
-            position: absolute;
-            top: 3px;
-            right: 0;
+            /*position: absolute;*/
+            /*top: 3px;*/
+            /*right: 0;*/
+            margin-left:5px;
             .el-button {
               width: 50px;
               height: 34px;
             }
           }
         }
-        @media screen and (max-width: 768px) {
-          .search-left, .search-right {
-            text-align: left;
-          }
+        /*@media screen and (max-width: 768px) {*/
+          /*.search-left, .search-right {*/
+            /*text-align: left;*/
+          /*}*/
 
-          .search-right {
-            .search-btn {
-              position: absolute;
-              left: 282px;
-            }
-          }
-        }
+          /*.search-right {*/
+            /*.search-btn {*/
+              /*position: absolute;*/
+              /*left: 282px;*/
+            /*}*/
+          /*}*/
+        /*}*/
       }
       table {
         td.no-data {
@@ -681,6 +769,21 @@
       }
       .bottom-pagination {
         margin-top: 10px;
+        @media screen and (max-width: 768px) {
+          position: relative;
+          .pagination-left{
+            position: absolute;
+            top:32px;
+            left:49px;
+          }
+          .pagination-right{
+            .total{
+              position: absolute;
+              top:32px;
+              right:49px;
+            }
+          }
+        }
       }
     }
     .el-dialog__wrapper {
@@ -697,5 +800,101 @@
         }
       }
     }
+    @media screen and (max-width: 768px) {
+      h3:nth-child(2) {
+        position: relative;
+        .iconfont{
+          position:absolute;
+          top: 4px;
+        }
+        .icon-copy{
+          right: 28px;
+        }
+        .icon-code{
+          right:58px;
+        }
+        span:nth-child(2) {
+          display: block;
+          font-size: @font-size-16;
+        }
+      }
+      .account-property{
+        .table-box{
+          background:@bg-1-color;
+          .table{
+            tr{
+              border:0;
+              td{
+                border-right:0;
+              }
+            }
+            td:last-child{
+              border-bottom:0;
+              margin-bottom:0;
+            }
+          }
+        }
+      }
+      .transaction-record{
+        .search{
+          .search-left {
+            text-align: left;
+            margin-bottom:5px;
+            display:flex;
+            justify-content: start;
+            .el-select {
+              margin-right:0;
+              .el-input {
+                .el-input__inner{
+                  /*width:84%;*/
+                }
+                .el-input__suffix{
+                  /*right:40px;*/
+                }
+              }
+            }
+            .el-select:nth-child(2){
+              margin-left:25px;
+            }
+          }
+          .search-right{
+            text-align: left;
+            display:flex;
+            justify-content: start;
+            div.date-text{
+              display:none;
+            }
+            .el-date-editor{
+              margin-right:0;
+              width:auto;
+              .el-range-input{
+                width:50%;
+              }
+            }
+            .search-btn{
+              position: initial;
+            }
+          }
+        }
+      }
+      .el-dialog__wrapper {
+        .el-dialog {
+          min-width: 320px;
+          .el-dialog__body {
+            padding:10px 0;
+            .qr-code {
+              /*width: 170px;*/
+              /*height: 170px;*/
+              margin: 10px auto;
+              background: #fff;
+              padding: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+  .el-popup-parent--hidden{
+    padding-right:0!important;
   }
 </style>

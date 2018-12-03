@@ -71,7 +71,7 @@
               * 提交申请
               * submit applications
               * */
-              this.$http.post('http://120.77.241.8:8016/coinAddress/address',data)
+              this.$http.post("http://120.77.241.8:8016/coinAddress/address?address="+this.testNulsForm.address+"&code="+this.testNulsForm.code)
                 .then(function (data){
                   if(data.data.code==="SYS100"){
                     _this.$message({
@@ -189,6 +189,41 @@
               }
               .el-checkbox__input {
                 padding-top: 3px;
+              }
+            }
+          }
+        }
+      }
+    }
+    @media screen and (max-width: 768px) {
+      .el-form{
+        .el-form-item:nth-child(3) {
+          .el-form-item__content{
+            .img-code-box{
+              right: 0;
+              top: -15px;
+              img{
+                width: 100px;
+                height: 32px;
+              }
+            }
+          }
+        }
+        .el-form-item:nth-child(4) {
+          margin-top:-5px;
+          text-align: left;
+          .el-form-item__content {
+            line-height: 22px;
+            .el-checkbox-group{
+              .el-checkbox{
+                display:flex;
+                align-items: start;
+                .el-checkbox__label{
+                  white-space: initial;
+                }
+                .el-checkbox__input {
+                  padding-top: 3px;
+                }
               }
             }
           }

@@ -7,13 +7,13 @@
           <a class="first-title" href="https://wallet.nuls.io/static/pdf/webwallet.pdf" target="_blank">
             <el-collapse-item name="0">
               <template slot="title" class="flex">
-                <div class="header-text text-d">{{ $t('message.help21') }}</div>
+                <div class="header-text text-d overflow header-text1">{{ $t('message.help21') }}</div>
               </template>
             </el-collapse-item>
           </a>
           <el-collapse-item name="1">
             <template slot="title" class="flex">
-              <div class="header-text">{{ $t('message.help2') }}</div>
+              <div class="header-text header-text2">{{ $t('message.help2') }}</div>
             </template>
             <div>{{ $t('message.help3') }}</div>
             <div>{{ $t('message.help20') }}</div>
@@ -23,7 +23,7 @@
           </el-collapse-item>
           <el-collapse-item name="2">
             <template slot="title" class="flex">
-              <div class="header-text">{{ $t('message.help7') }}</div>
+              <div class="header-text header-text3">{{ $t('message.help7') }}</div>
             </template>
             <div>{{ $t('message.help8') }}</div>
             <div>{{ $t('message.help23') }}</div>
@@ -31,13 +31,13 @@
           </el-collapse-item>
           <el-collapse-item name="3">
             <template slot="title" class="flex">
-              <div class="header-text">{{ $t('message.help10') }}</div>
+              <div class="header-text header-text4">{{ $t('message.help10') }}</div>
             </template>
             <div>{{ $t('message.help11') }}</div>
           </el-collapse-item>
           <el-collapse-item name="4">
             <template slot="title" class="flex">
-              <div class="header-text">{{ $t('message.help12') }}</div>
+              <div class="header-text header-text5">{{ $t('message.help12') }}</div>
             </template>
             <div>{{ $t('message.help13') }}</div>
             <div>{{ $t('message.help22') }}</div>
@@ -46,13 +46,13 @@
           </el-collapse-item>
           <el-collapse-item name="5">
             <template slot="title" class="flex">
-              <div class="header-text">{{ $t('message.help16') }}</div>
+              <div class="header-text header-text6">{{ $t('message.help16') }}</div>
             </template>
             <div>{{ $t('message.help17') }}</div>
           </el-collapse-item>
           <el-collapse-item name="6">
             <template slot="title" class="flex">
-              <div class="header-text">{{ $t('message.help18') }}</div>
+              <div class="header-text header-text7">{{ $t('message.help18') }}</div>
             </template>
             <div>{{ $t('message.help19') }}</div>
           </el-collapse-item>
@@ -139,6 +139,16 @@
           .el-collapse-item__content{
             color:@c-font-gray-color;
           }
+        }
+      }
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .help-content {
+      margin-top:20px;
+      .el-collapse{
+        .el-collapse-item{
+          padding:0;
         }
       }
     }

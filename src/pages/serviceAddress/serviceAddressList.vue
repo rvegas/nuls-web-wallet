@@ -6,7 +6,7 @@
         <span>{{$t('message.serviceAddressList1')}}</span>
       </div>
       <div class="list">
-        <table boeder="1">
+        <table class="table">
           <thead>
           <tr>
             <th>{{$t('message.serviceAddressList2')}}</th>
@@ -25,7 +25,10 @@
             <td :data-label="$t('message.serviceAddressList6')" v-if="item.status==='0'">{{item.delay}}</td>
             <td :data-label="$t('message.serviceAddressList6')" v-if="item.status==='1'">{{delay}}</td>
             <td :data-label="$t('message.serviceAddressList7')">
-              <span class="text1" @click="edit(index,item)" v-show="item.address ==='http://testnet.apiserver.nuls.io'? false:true">{{$t('message.serviceAddressList8')}}</span>
+              <!--<span class="text1" @click="edit(index,item)" v-show="item.address ==='http://50.62.6.187:8005'? false:true">{{$t('message.serviceAddressList8')}}</span>-->
+              <!--<span class="text1" @click="edit(index,item)" v-show="item.address ==='http://testnet.apiserver.nuls.io'? false:true">{{$t('message.serviceAddressList8')}}</span>-->
+              <span class="text1" @click="edit(index,item)" v-show="item.address ==='https://apiserver.nuls.io'? false:true">{{$t('message.serviceAddressList8')}}</span>
+              <!--<span class="text1" @click="edit(index,item)" v-show="item.address ==='https://apiserver.baota.io'? false:true">{{$t('message.serviceAddressList8')}}</span>-->
               <span class="text2" @click="useAddress(item)">{{$t('message.serviceAddressList9')}}</span>
             </td>
           </tr>
@@ -52,7 +55,7 @@
             <h1>{{$t('message.serviceAddressList10')}}</h1>
             <div class="tips">{{$t('message.serviceAddressList12')}}</div>
             <el-form-item :label="$t('message.serviceAddressList13')" prop="newAddress">
-              <el-input type="text" v-model="addAddressForm.newAddress" onkeyup="this.value=this.value.replace(/\s+/g,'')"></el-input>
+              <el-input type="text" v-model.trim="addAddressForm.newAddress" onkeyup="this.value=this.value.replace(/\s+/g,'')"></el-input>
             </el-form-item>
             <div @change="quicklyUse('addAddressForm')">
               <el-form-item label="" prop="type" class="form-checkbox">
@@ -106,7 +109,10 @@
         rowIndex:'',
         addAddressVisible:false,
         serviceData: [{
-          address: 'http://testnet.apiserver.nuls.io',
+           // address: 'http://50.62.6.187:8005',
+          address: 'https://apiserver.nuls.io',
+          // address: 'http://testnet.apiserver.nuls.io',
+          // address: 'https://apiserver.baota.io',
           status: '0',
           delay: '0',
         }],

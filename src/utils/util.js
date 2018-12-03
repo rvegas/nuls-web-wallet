@@ -60,7 +60,46 @@ export function contentMinHeight() {
   let footerHeight = document.getElementsByClassName('bottom')[0].offsetHeight;
   let contentHeight = document.getElementsByClassName('main-content')[0].style.minHeight;
   contentHeight = clientHeight - headerHeight - footerHeight + 'px';
-  //console.log(contentHeight)
+}
+/**
+ * 根据时间差，转换为天，时，分
+ * According to the time difference, convert to day, hour, minute
+ */
+export function timeSlot(time) {
+  let timeArr=[];
+  let day,hour,minute,second;
+  day = Math.floor(time/(24 * 3600 * 1000));
+  timeArr.push(day);
+  time = time%(3600*24* 1000);//除去整天之后剩余的时间
+  hour = Math.floor(time/(3600* 1000));
+  timeArr.push(hour);
+  time = time%(3600* 1000);//除去整小时之后剩余的时间
+  minute = Math.floor(time/(60* 1000));
+  timeArr.push(minute);
+  second = time%1000;//除去整分钟之后剩余的时间
+  return timeArr;
 }
 
-
+/**
+ * 判断打开的终端
+ * According to the time difference, convert to day, hour, minute
+ */
+export function versions() {
+  let u = navigator.userAgent, app = navigator.appVersion;
+  let mobile,ios,android,iPhone,iPad;
+  let mobileVersions;
+    mobile= !!u.match(/AppleWebKit.*Mobile.*/); //是否为移动终端
+    ios= !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    android= u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //android终端或者uc浏览器
+    iPhone= u.indexOf('iPhone') > -1; //是否为iPhone或者QQHD浏览器
+    iPad= u.indexOf('iPad') > -1;//是否iPad
+    if(mobile || ios || android || iPhone || iPad){
+      mobileVersions = true
+    }else{
+      mobileVersions = false
+    }
+    //console.log(navigator.userAgent)
+  return {
+    mobileVersions
+  };
+}

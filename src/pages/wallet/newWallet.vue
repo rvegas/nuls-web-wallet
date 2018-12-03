@@ -34,6 +34,7 @@
 
 <script>
   import {password} from '@/utils/validate'
+  import {versions} from '@/utils/util'
   import nulsJs from 'nuls-jssdk'
 
   export default {
@@ -171,9 +172,15 @@
        * To import account
        */
       importAccount() {
-        this.$router.push({
-          name: '/importKeyFile'
-        });
+        if (versions().mobileVersions) {
+          this.$router.push({
+            name: '/importKeyCode'
+          });
+        } else {
+          this.$router.push({
+            name: '/importKeyFile'
+          });
+        }
       },
       /**
        * 服务条款
@@ -207,6 +214,9 @@
     h1 {
       margin-bottom: 40px;
       font-size: @font-size-20;
+      @media (max-width: 768px) {
+        margin: 1.5rem 0;
+      }
     }
     .prompt {
       max-width: 526px;
@@ -272,12 +282,18 @@
             position: initial;
             margin-top: 0;
             margin-left: 0;
+            @media (max-width: 768px) {
+              line-height: 1.5rem;
+            }
           }
         }
       }
       .form-bt {
         text-align: center;
         margin-top: 48px;
+        @media (max-width: 768px) {
+          margin: 2rem 0 0 0;
+        }
         .el-form-item__content {
           .el-button--primary {
             width: @bt-width*2.5;

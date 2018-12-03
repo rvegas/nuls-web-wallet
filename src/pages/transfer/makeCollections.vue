@@ -4,8 +4,13 @@
       <BackBar :backTitle="$t('message.account')"></BackBar>
       <h3 class="h3">NULS {{ $t('message.makeCollectionsTitle') }}</h3>
       <div class="address-div">
-        <h3 class="h3">{{ $t('message.makeCollectionsAddress') }}<span>{{this.address}}</span><i @click="accountCopy(address)" class="icon-copy iconfont iconfont-common-white cursor-p">&#xe60f;</i></h3>
-        <div class="account-ipt flex-common">
+        <h3 class="h3">
+          <span>{{ $t('message.makeCollectionsAddress') }}</span>
+          <span>
+            <span>{{this.address}}</span><i @click="accountCopy(address)" class="icon-copy iconfont iconfont-common-white cursor-p">&#xe60f;</i>
+          </span>
+        </h3>
+        <div class="account-ipt flex">
           <div>{{ $t('message.makeCollectionsMoney') }}</div>
           <!--<el-input v-model="sum" @change="changeSum"></el-input>-->
           <el-input v-model="sum"  @keyup.native="changeSum"></el-input>
@@ -101,7 +106,7 @@
     }
     .h3{
       margin-bottom:20px;
-      span{
+      span:nth-child(2){
         color:@c-font-yellow1-color;
         padding-right:10px;
       }
@@ -139,6 +144,25 @@
       .tips{
         color:@c-font-gray-color;
         font-size: @font-size-16;
+      }
+    }
+    @media screen and (max-width: 768px) {
+      .h3{
+        span:nth-child(2){
+         display:block;
+        }
+      }
+      .address-div{
+        width:auto;
+      }
+      .account-ipt{
+        text-align: left;
+        .el-input{
+          width:100%;
+          .el-input__inner{
+            width:80%;
+          }
+        }
       }
     }
   }

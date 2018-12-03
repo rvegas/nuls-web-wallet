@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <div class="center import-file-wallet">
+    <div class="center import-file-wallet" v-loading="loading">
       <h2>{{ $t('message.importWallet') }}</h2>
       <el-form>
         <div class="import-keystore" @click="importKeystore">
@@ -25,7 +25,7 @@
   import {password} from '@/utils/validate'
   import nulsJs from 'nuls-jssdk'
   import PasswordTwo from '@/components/PasswordTwoBar.vue'
-
+  import {versions} from '@/utils/util'
   export default {
     data() {
       let validatePass = (rule, value, callback) => {
@@ -48,6 +48,7 @@
         * Whether the password
         * */
         encryptedPri: true,
+        loading: false,
 
       };
     },
@@ -61,47 +62,60 @@
        * import keystore
        **/
       importKeystore() {
+        let mobileVersions = versions();
         let _this = this;
-        let obj = document.getElementById("fileId");
-        obj.click();
-        obj.value='';
-        obj.onchange = function () {
-          if (this.value !== '') {
-            let file = obj.files[0];
-            let suffixName = file.name.toLowerCase().split('.').splice(-1);
-            if (suffixName[0] === 'keystore') {
-              _this.readFiles(obj);
-              /**
-               * 延迟执行缓存数据
-               * Delayed execution of cached data
-               **/
-              setTimeout(() => {
-                if (_this.keystoreInfo !== '') {
-                  //console.log(JSON.parse(_this.keystoreInfo));
-                  let keyInfo = JSON.parse(_this.keystoreInfo);
-                  _this.encryptedPri = keyInfo.encryptedPrivateKey.length > 10 ? true : false;
-                  if(_this.encryptedPri){
-                    _this.$refs.password.showPassword(true);
-                  }else{
-                    _this.$refs.passTwo.showPasswordTwo(true);
+        if(!mobileVersions.mobileVersions){
+          let obj = document.getElementById("fileId");
+          obj.click();
+          obj.value='';
+          obj.onchange = function () {
+            if (this.value !== '') {
+              let file = obj.files[0];
+              let suffixName = file.name.toLowerCase().split('.').splice(-1);
+              if (suffixName[0] === 'keystore') {
+                _this.readFiles(obj);
+                /**
+                 * 延迟执行缓存数据
+                 * Delayed execution of cached data
+                 **/
+                setTimeout(() => {
+                  if (_this.keystoreInfo !== '') {
+                    //console.log(JSON.parse(_this.keystoreInfo));
+                    let keyInfo = JSON.parse(_this.keystoreInfo);
+                    // if(!_this.encryptedPri){
+                    //   _this.encryptedPri = false;
+                    // }else{
+                    //   _this.encryptedPri = keyInfo.encryptedPrivateKey.length > 10 ? true : false;
+                    // }
+
+                    if(keyInfo.encryptedPrivateKey === 'null' || keyInfo.encryptedPrivateKey === null){
+                      _this.$refs.passTwo.showPasswordTwo(true);
+                    }else{
+                      _this.$refs.password.showPassword(true);
+                    }
+                  } else {
+                    _this.$message({
+                      type: 'warning', message: _this.$t('message.importKeyErrorTips1'), duration: '2000'
+                    })
                   }
-                } else {
-                  _this.$message({
-                    type: 'warning', message: _this.$t('message.importKeyErrorTips1'), duration: '2000'
-                  })
-                }
-              }, 500)
+                }, 500)
+              } else {
+                _this.$message({
+                  type: 'warning', message: _this.$t('message.importKeyFile3'), duration: '2000'
+                })
+              }
             } else {
               _this.$message({
-                type: 'warning', message: _this.$t('message.importKeyFile3'), duration: '2000'
+                type: 'warning', message: _this.$t('message.importKeyErrorTips2'), duration: '2000'
               })
             }
-          } else {
-            _this.$message({
-              type: 'warning', message: _this.$t('message.importKeyErrorTips2'), duration: '2000'
-            })
           }
+        }else{
+          _this.$message({
+            message: _this.$t('message.mobileVersionsTip'), type: 'warning', duration: '1000'
+          });
         }
+
       },
 
       /**
@@ -157,14 +171,25 @@
        **/
       toSubmit(password) {
         let _this = this;
+        _this.loading=true;
         let keyInfo = JSON.parse(this.keystoreInfo);
-        let pri = keyInfo.encryptedPrivateKey.length > 10 ? keyInfo.encryptedPrivateKey : keyInfo.prikey;
-        let priBoolean = keyInfo.encryptedPrivateKey.length > 10 ? true : false;
+        let pri
+        let priBoolean;
+        if(keyInfo.encryptedPrivateKey === 'null' || keyInfo.encryptedPrivateKey === null){
+          pri = keyInfo.prikey;
+          priBoolean = false;
+        }else{
+          pri = keyInfo.encryptedPrivateKey;
+          priBoolean = true;
+        }
+        //let pri = keyInfo.encryptedPrivateKey.length > 10 ? keyInfo.encryptedPrivateKey : keyInfo.prikey;
+        //let priBoolean = keyInfo.encryptedPrivateKey.length > 10 ? true : false;
         let params = {"pri": pri, "types": priBoolean, "pass": password,"pub":keyInfo.pubKey};
         //console.log(params);
         nulsJs.importWallet(params, function (data) {
           //console.log(data);
           if (data.success) {
+            _this.loading=false;
             localStorage.setItem("address", data.data.address);
             _this.$store.commit('setAddress', data.data.address);
             localStorage.setItem("encryptedPrivateKey", data.data.pri);
@@ -177,6 +202,7 @@
               name: '/account',
             })
           } else {
+            _this.loading=false;
             _this.$message({
               message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
             });

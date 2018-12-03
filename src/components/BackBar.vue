@@ -1,5 +1,7 @@
 <template>
-    <div class="back" @click="back"><i class="el-icon-arrow-left"></i>{{backTitle}}</div>
+    <div class="back" :backUrl="backUrl">
+      <span class="back-box" @click="back"><i class="el-icon-arrow-left"></i><span>{{backTitle}}</span></span>
+    </div>
 </template>
 
 <script>
@@ -44,4 +46,9 @@
         color:@c-font-blue1-color;
        }
     }
+  @media screen and (max-width: 768px) {
+    .back {
+      margin: 10px 0;
+    }
+  }
 </style>
