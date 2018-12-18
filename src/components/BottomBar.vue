@@ -43,8 +43,8 @@
     },
     computed: {
       nodeAddress() {
-        return this.$store.getters.getNodeAddress ? this.$store.getters.getNodeAddress : 'https://apiserver.nuls.io'
-        // return this.$store.getters.getNodeAddress ? this.$store.getters.getNodeAddress : 'http://testnet.apiserver.nuls.io'
+        // return this.$store.getters.getNodeAddress ? this.$store.getters.getNodeAddress : 'https://apiserver.nuls.io'
+        return this.$store.getters.getNodeAddress ? this.$store.getters.getNodeAddress : 'http://testnet.apiserver.nuls.io'
       }
     },
     created() {

@@ -1,3 +1,5 @@
+//const IS_DEV = process.env.NODE_ENV === 'production';
+import {RUN_DEV} from '@/config'
 const state = {
   passwordShow: false,
   /**
@@ -19,9 +21,9 @@ const state = {
    * 节点地址
    * Node address
    * */
-  nodeAddress: 'https://apiserver.nuls.io',
   //  nodeAddress: 'http://50.62.6.187:8005',
-  // nodeAddress: 'http://testnet.apiserver.nuls.io',
+  //  nodeAddress: 'http://testnet.apiserver.nuls.io',
+  nodeAddress: RUN_DEV ? 'https://apiserver.nuls.io' : 'http://testnet.apiserver.nuls.io',
   // nodeAddress: 'https://apiserver.baota.io',
   //节点地址延迟
   /**
@@ -70,8 +72,8 @@ const state = {
    * */
   // browserAddress: 'http://192.168.1.130:8088/',
   // browserAddress: 'http://testnet.nulscan.io/',
-  browserAddress: 'https://nulscan.io/',
-  //browserAddress: 'http://192.168.1.118:9001/',
+  // browserAddress: 'https://nulscan.io/',
+  browserAddress: RUN_DEV ? 'https://nulscan.io/' : 'http://testnet.nulscan.io/',
 };
 
 const getters = {

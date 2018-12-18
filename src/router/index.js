@@ -248,15 +248,6 @@ export default new Router({
       meta: {
         keepAlive: true
       },
-      beforeEnter: (to, from, next) => {
-        if(localStorage.getItem('address')){
-          next();
-        }else{
-          next({
-            path: '/home',
-          })
-        }
-      },
     },
     {
       path: '/vote/voteHistory',
@@ -293,15 +284,6 @@ export default new Router({
       path: '/vote/voteDetail',
       name: '/voteDetail',
       component: resolve => require(['@/pages/vote/voteDetail'], resolve),
-      beforeEnter: (to, from, next) => {
-        if(localStorage.getItem('address')){
-          next();
-        }else{
-          next({
-            path: '/home',
-          })
-        }
-      },
     },
   ]
 })

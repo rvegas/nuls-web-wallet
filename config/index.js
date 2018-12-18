@@ -10,9 +10,9 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        // target: 'http://testnet.wallet.nuls.io',
-        target: 'https://wallet.nuls.io',
-        //  target: 'https://wallet.baota.io',
+        target: 'http://testnet.wallet.nuls.io',
+        // target: 'https://wallet.nuls.io',
+        // target: 'http://192.168.1.39:8080',
         changeOrigin: true,   //允许跨域
         pathRewrite: {
           '^/api': '/api'

@@ -25,10 +25,9 @@
             <td :data-label="$t('message.serviceAddressList6')" v-if="item.status==='0'">{{item.delay}}</td>
             <td :data-label="$t('message.serviceAddressList6')" v-if="item.status==='1'">{{delay}}</td>
             <td :data-label="$t('message.serviceAddressList7')">
-              <!--<span class="text1" @click="edit(index,item)" v-show="item.address ==='http://50.62.6.187:8005'? false:true">{{$t('message.serviceAddressList8')}}</span>-->
-              <!--<span class="text1" @click="edit(index,item)" v-show="item.address ==='http://testnet.apiserver.nuls.io'? false:true">{{$t('message.serviceAddressList8')}}</span>-->
-              <span class="text1" @click="edit(index,item)" v-show="item.address ==='https://apiserver.nuls.io'? false:true">{{$t('message.serviceAddressList8')}}</span>
-              <!--<span class="text1" @click="edit(index,item)" v-show="item.address ==='https://apiserver.baota.io'? false:true">{{$t('message.serviceAddressList8')}}</span>-->
+              <!--http://testnet.apiserver.nuls.io-->
+              <!--https://apiserver.nuls.io-->
+              <span class="text1" @click="edit(index,item)" v-show="item.address ==='http://testnet.apiserver.nuls.io'? false:true">{{$t('message.serviceAddressList8')}}</span>
               <span class="text2" @click="useAddress(item)">{{$t('message.serviceAddressList9')}}</span>
             </td>
           </tr>
@@ -55,11 +54,12 @@
             <h1>{{$t('message.serviceAddressList10')}}</h1>
             <div class="tips">{{$t('message.serviceAddressList12')}}</div>
             <el-form-item :label="$t('message.serviceAddressList13')" prop="newAddress">
-              <el-input type="text" v-model.trim="addAddressForm.newAddress" onkeyup="this.value=this.value.replace(/\s+/g,'')"></el-input>
+              <el-input type="text" v-model.trim="addAddressForm.newAddress"
+                        onkeyup="this.value=this.value.replace(/\s+/g,'')"></el-input>
             </el-form-item>
             <div @change="quicklyUse('addAddressForm')">
               <el-form-item label="" prop="type" class="form-checkbox">
-                <el-checkbox-group  v-model="addAddressForm.type">
+                <el-checkbox-group v-model="addAddressForm.type">
                   <el-checkbox :label="$t('message.serviceAddressList14')" name="type"></el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
@@ -67,7 +67,8 @@
             <el-form-item class="form-bt">
               <div class="dialog-footer">
                 <el-button @click="addAddressVisible = false">{{$t('message.cancel')}}</el-button>
-                <el-button type="primary" @click="addAddressSure('addAddressForm')">{{$t('message.confirm')}}</el-button>
+                <el-button type="primary" @click="addAddressSure('addAddressForm')">{{$t('message.confirm')}}
+                </el-button>
               </div>
             </el-form-item>
           </el-form>
@@ -79,7 +80,9 @@
 
 <script>
   import nulsJs from 'nuls-jssdk'
+  import {RUN_DEV} from '@/config'
   import {serviceAddress} from '@/utils/validate'
+
   export default {
     data() {
       let validateAddress = (rule, value, callback) => {
@@ -93,26 +96,23 @@
       };
       return {
         /**
-        * 用于判断 编辑，新增
-        * Used to judge editors, add
-        * */
-        editFlg:true,
+         * 用于判断 编辑，新增
+         * Used to judge editors, add
+         * */
+        editFlg: true,
         /**
          * 是否使用，0：未使用，1：使用中
          * 0: unused, 1: in use
          * */
-        statusFlg:'0',
+        statusFlg: '0',
         /**
          * 列表中tr的索引值
          * Index values for each row in the list
          * */
-        rowIndex:'',
-        addAddressVisible:false,
+        rowIndex: '',
+        addAddressVisible: false,
         serviceData: [{
-           // address: 'http://50.62.6.187:8005',
-          address: 'https://apiserver.nuls.io',
-          // address: 'http://testnet.apiserver.nuls.io',
-          // address: 'https://apiserver.baota.io',
+          address: RUN_DEV ? 'https://apiserver.nuls.io' : 'http://testnet.apiserver.nuls.io',
           status: '0',
           delay: '0',
         }],
@@ -122,47 +122,48 @@
          * */
         addAddressForm: {
           newAddress: '',
-          type:false,
+          type: false,
         },
         /**
          * 表单验证信息
          * Form validation information
          * */
         addAddressRules: {
-          newAddress:[
+          newAddress: [
             {validator: validateAddress, trigger: 'blur'}
-            ],
+          ],
         },
+        running:RUN_DEV,
       }
     },
     computed: {
       delay() {
-        return this.$store.getters.getDelay? this.$store.getters.getDelay+'MS' : '0'
+        return this.$store.getters.getDelay ? this.$store.getters.getDelay + 'MS' : '0'
       }
     },
-    created(){
-      if(localStorage.getItem('serviceData')){
+    created() {
+      if (localStorage.getItem('serviceData')) {
         this.$store.commit('refreshService', localStorage.getItem('serviceData'));
-        this.serviceData=JSON.parse(localStorage.getItem('serviceData'));
+        this.serviceData = JSON.parse(localStorage.getItem('serviceData'));
       }
       this.useStatus();
     },
     methods: {
-      add(){
-        this.addAddressVisible=false;
+      add() {
+        this.addAddressVisible = false;
         this.$store.commit('setServiceData', JSON.stringify(this.serviceData));
-       localStorage.setItem("serviceData",JSON.stringify(this.serviceData));
+        localStorage.setItem("serviceData", JSON.stringify(this.serviceData));
       },
       /**
        * 使用状态的判断，0：未使用，1：使用中
        * Judgement of usage state，0: unused, 1: in use
        * */
-      useStatus(){
-        for(let i=0;i<this.serviceData.length;i++){
-          if(this.serviceData[i].address === this.$store.getters.getNodeAddress){
-            this.serviceData[i].status='1'
-          }else{
-            this.serviceData[i].status='0'
+      useStatus() {
+        for (let i = 0; i < this.serviceData.length; i++) {
+          if (this.serviceData[i].address === this.$store.getters.getNodeAddress) {
+            this.serviceData[i].status = '1'
+          } else {
+            this.serviceData[i].status = '0'
           }
         }
       },
@@ -170,15 +171,15 @@
        * 新增按钮
        * New button
        * */
-      addSubmit(){
-        if(this.serviceData.length>=10){
+      addSubmit() {
+        if (this.serviceData.length >= 10) {
           this.$message({
-            type: 'warning', message:this.$t('message.serviceAddressList15'), duration: '2000'
+            type: 'warning', message: this.$t('message.serviceAddressList15'), duration: '2000'
           })
-        }else{
-          this.addAddressVisible=true;
-          this.editFlg=false;
-          this.addAddressForm.newAddress='';
+        } else {
+          this.addAddressVisible = true;
+          this.editFlg = false;
+          this.addAddressForm.newAddress = '';
         }
       },
 
@@ -186,34 +187,36 @@
        * 编辑
        * Edit
        * */
-      edit(index,row){
-        this.editFlg=true;
-        this.addAddressVisible=true;
-        this.addAddressForm.newAddress=row.address;
-        this.rowIndex=index;
+      edit(index, row) {
+        this.editFlg = true;
+        this.addAddressVisible = true;
+        this.addAddressForm.newAddress = row.address;
+        this.rowIndex = index;
       },
 
       /**
        * 使用
        * Use
        * */
-      useAddress(row){
+      useAddress(row) {
         let _this = this;
-        let params = {"url":row.address};
+        let params = {"url": row.address};
         //console.log(params);
-        nulsJs.resetUrl(params,function(data){
+        nulsJs.resetUrl(params, function (data) {
           //console.log(data);
-          if(data.success){
-            row.status='1';
+          if (data.success) {
+            row.status = '1';
             _this.$store.commit('setNodeAddress', row.address);
-            localStorage.setItem("nodeAddress",row.address);
+            localStorage.setItem("nodeAddress", row.address);
             _this.$store.commit('setActiveNav', '1');
             sessionStorage.setItem("activeNav", '1');
             _this.$store.commit('setHeightFlg', "0");
             _this.getHeightInfo();
-          }else{
+          } else {
             _this.$message({
-              message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
+              message: _this.$t('message.failed') + ':' + _this.$t('message.' + data.code),
+              type: 'warning',
+              duration: '1000'
             });
           }
         });
@@ -223,29 +226,35 @@
        * 立即使用
        * Immediate use
        * */
-      quicklyUse(formName){
+      quicklyUse(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             let _this = this;
-            nulsJs.resetUrl({"url":_this.addAddressForm.newAddress},function(data){
+            nulsJs.resetUrl({"url": _this.addAddressForm.newAddress}, function (data) {
               //console.log(data);
-              if(data.success){
-                if(!_this.editFlg){
-                  _this.serviceData.push({address:_this.addAddressForm.newAddress, status: '1', delay: '0'});
-                }else{
-                  _this.serviceData.splice(_this.rowIndex,1,{address:_this.addAddressForm.newAddress, status: '1', delay: '0'});
+              if (data.success) {
+                if (!_this.editFlg) {
+                  _this.serviceData.push({address: _this.addAddressForm.newAddress, status: '1', delay: '0'});
+                } else {
+                  _this.serviceData.splice(_this.rowIndex, 1, {
+                    address: _this.addAddressForm.newAddress,
+                    status: '1',
+                    delay: '0'
+                  });
                 }
                 _this.$store.commit('setNodeAddress', _this.addAddressForm.newAddress);
-                localStorage.setItem("nodeAddress",_this.addAddressForm.newAddress);
+                localStorage.setItem("nodeAddress", _this.addAddressForm.newAddress);
                 _this.add();
                 _this.useStatus();
                 _this.$store.commit('setActiveNav', '1');
                 sessionStorage.setItem("activeNav", '1');
                 _this.$store.commit('setHeightFlg', "0");
                 _this.getHeightInfo();
-              }else{
+              } else {
                 _this.$message({
-                  message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
+                  message: _this.$t('message.failed') + ':' + _this.$t('message.' + data.code),
+                  type: 'warning',
+                  duration: '1000'
                 });
               }
             });
@@ -265,17 +274,19 @@
         nulsJs.getBlockBesthashDetail(function (data) {
           //console.log(data);
           if (data.success) {
-            sessionStorage.setItem("nodeError","1")
+            sessionStorage.setItem("nodeError", "1")
           } else {
-            sessionStorage.setItem("nodeError","0");
-            if(_this.$store.getters.getHeightFlg === '0'){
+            sessionStorage.setItem("nodeError", "0");
+            if (_this.$store.getters.getHeightFlg === '0') {
               if (sessionStorage.getItem('nodeError') === '0') {
                 _this.$message({
                   message: _this.$t('message.nodeError'), type: 'warning', duration: '1000'
                 });
-              }else{
+              } else {
                 _this.$message({
-                  message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
+                  message: _this.$t('message.failed') + ':' + _this.$t('message.' + data.code),
+                  type: 'warning',
+                  duration: '1000'
                 });
               }
             }
@@ -296,13 +307,17 @@
        * 新增弹框的确定按钮
        * New confirmation button for bomb box
        */
-      addAddressSure(formName){
+      addAddressSure(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            if(!this.editFlg){
-              this.serviceData.push({address:this.addAddressForm.newAddress, status: '0', delay: '0'});
-            }else{
-              this.serviceData.splice(this.rowIndex,1,{address:this.addAddressForm.newAddress, status: '0', delay: '0'});
+            if (!this.editFlg) {
+              this.serviceData.push({address: this.addAddressForm.newAddress, status: '0', delay: '0'});
+            } else {
+              this.serviceData.splice(this.rowIndex, 1, {
+                address: this.addAddressForm.newAddress,
+                status: '0',
+                delay: '0'
+              });
             }
             this.add();
           } else {
@@ -321,100 +336,100 @@
   .service-address-list {
     text-align: center;
     margin-top: 45px;
-    .title{
+    .title {
       font-size: @font-size-16;
       text-align: left;
-      margin-bottom:17px;
-      .address-icon{
+      margin-bottom: 17px;
+      .address-icon {
         background-position: -379px -26px;
-        height:16px;
+        height: 16px;
       }
     }
-    .list{
+    .list {
       background: @bg-1-color;
-      padding-bottom:15px;
+      padding-bottom: 15px;
       table {
-        td:last-child{
-          span{
+        td:last-child {
+          span {
             cursor: pointer;
           }
-          span:hover{
-            color:@c-font-blue1-color;
+          span:hover {
+            color: @c-font-blue1-color;
           }
-          .text1{
-            border-right:@border1;
-            padding-right:10px;
+          .text1 {
+            border-right: @border1;
+            padding-right: 10px;
           }
-          .text2{
-            padding-left:6px;
+          .text2 {
+            padding-left: 6px;
           }
         }
       }
-      .bottom-btn{
-        margin-top:27px;
-        margin-bottom:27px;
-        .el-button{
-          width:230px;
+      .bottom-btn {
+        margin-top: 27px;
+        margin-bottom: 27px;
+        .el-button {
+          width: 230px;
         }
       }
     }
-    .el-dialog__wrapper{
-      .el-dialog--center{
-        padding:40px 52px;
-        min-width:607px;
-        .el-dialog__header{
-          .el-dialog__headerbtn{
-            top:35px;
-            right:35px;
+    .el-dialog__wrapper {
+      .el-dialog--center {
+        padding: 40px 52px;
+        min-width: 607px;
+        .el-dialog__header {
+          .el-dialog__headerbtn {
+            top: 35px;
+            right: 35px;
           }
         }
-        .el-dialog__body{
+        .el-dialog__body {
           text-align: center;
-          .finish-dialog{
-            .el-form{
-              .el-form-item.is-error{
-                .el-form-item__content{
-                  .el-form-item__error{
-                    padding-top:0;
+          .finish-dialog {
+            .el-form {
+              .el-form-item.is-error {
+                .el-form-item__content {
+                  .el-form-item__error {
+                    padding-top: 0;
                   }
                 }
               }
-              h1{
+              h1 {
                 font-size: @font-size-18;
-                margin-bottom:24px;
+                margin-bottom: 24px;
               }
-              .tips{
-                margin:22px 0;
+              .tips {
+                margin: 22px 0;
                 font-size: @font-size-14;
                 text-align: left;
               }
-              .el-form-item__label,.el-checkbox__label{
-                color:@c-font-gray2-color;
+              .el-form-item__label, .el-checkbox__label {
+                color: @c-font-gray2-color;
               }
-              .address-ipt{
+              .address-ipt {
                 text-align: left;
-                margin-bottom:36px;
-                div:nth-child(1),div:nth-child(3){
+                margin-bottom: 36px;
+                div:nth-child(1), div:nth-child(3) {
                   font-size: @font-size-14;
-                  color:@c-font-gray2-color;
+                  color: @c-font-gray2-color;
                 }
-                div:nth-child(2){
-                  margin:10px 0;
-                  input{
-                    height:34px;
-                    line-height:34px;
-                    padding-left:12px;
-                    border:@border2;
-                    background:transparent;
+                div:nth-child(2) {
+                  margin: 10px 0;
+                  input {
+                    height: 34px;
+                    line-height: 34px;
+                    padding-left: 12px;
+                    border: @border2;
+                    background: transparent;
                     width: 422px;
-                    &:hover{
-                      border:@border1;
+                    &:hover {
+                      border: @border1;
                     }
                   }
                 }
-                div:nth-child(3){
+                div:nth-child(3) {
                   justify-content: flex-start;
-                  .circle{
+                  .circle {
                     display: inline-block;
                     width: 5px;
                     height: 5px;
@@ -425,60 +440,60 @@
                   }
                 }
               }
-                .form-checkbox.el-form-item {
-                  margin-top:-20px;
-                  text-align:left;
-                  .el-form-item__content {
-                    .el-checkbox-group {
-                      .el-checkbox {
-                        &:hover{
-                          .el-checkbox__input{
-                            .el-checkbox__inner{
-                              border: 2px solid @c-h-color;
-                            }
-                          }
-                        }
-                        .el-checkbox__input{
-                          vertical-align: text-top;
-                          margin-right:-5px;
-                          .el-checkbox__inner{
-                            background-image:none;
-                            display: inline-block;
-                            width: 5px;
-                            height: 5px;
-                            border: 2px solid @c-font-gray2-color;
-                            border-radius: 50%;
-                            margin: 0 5px 0 0;
-                            padding: 3px;
-                            &:after{
-                              display:none;
-                            }
-                          }
-                          .el-checkbox__label{
-                            color: @c-h-color;
-                          }
-                        }
-                        .el-checkbox__input.is-focus{
-                          .el-checkbox__inner{
+              .form-checkbox.el-form-item {
+                margin-top: -20px;
+                text-align: left;
+                .el-form-item__content {
+                  .el-checkbox-group {
+                    .el-checkbox {
+                      &:hover {
+                        .el-checkbox__input {
+                          .el-checkbox__inner {
                             border: 2px solid @c-h-color;
                           }
                         }
-                        .el-checkbox__input.is-focus+.el-checkbox__label {
+                      }
+                      .el-checkbox__input {
+                        vertical-align: text-top;
+                        margin-right: -5px;
+                        .el-checkbox__inner {
+                          background-image: none;
+                          display: inline-block;
+                          width: 5px;
+                          height: 5px;
+                          border: 2px solid @c-font-gray2-color;
+                          border-radius: 50%;
+                          margin: 0 5px 0 0;
+                          padding: 3px;
+                          &:after {
+                            display: none;
+                          }
+                        }
+                        .el-checkbox__label {
                           color: @c-h-color;
                         }
+                      }
+                      .el-checkbox__input.is-focus {
+                        .el-checkbox__inner {
+                          border: 2px solid @c-h-color;
+                        }
+                      }
+                      .el-checkbox__input.is-focus + .el-checkbox__label {
+                        color: @c-h-color;
                       }
                     }
                   }
                 }
-              .form-bt{
-                .dialog-footer{
-                  .el-button{
-                    span{
+              }
+              .form-bt {
+                .dialog-footer {
+                  .el-button {
+                    span {
                       font-size: @font-size-14;
                     }
                   }
-                  .el-button:nth-child(1){
-                    margin-right:47px;
+                  .el-button:nth-child(1) {
+                    margin-right: 47px;
                   }
                 }
               }

@@ -457,6 +457,7 @@
                 "types":"101"
               };
               let _this=this;
+              console.log(paramsSign)
               nulsJs.signWithHash(paramsSign, function (data) {
                 //console.log(data);
                 if (data.success) {

@@ -51,18 +51,6 @@
               <div v-show="item.status===0">
                 <span>{{item.time}}</span>
               </div>
-              <!--<div v-show="item.status===1">-->
-                <!--<span v-if="item.time[0]===0 && item.time[1]!==0">{{$t('message.timeAlso')+&nbsp;+item.time[1] +$t('message.timeHours')+ item.time[2] +$t('message.timeMinutes')+$t('message.timeStart')}}</span>-->
-                <!--<span v-else-if="item.time[0]===0 && item.time[1]===0 && item.time[2]!==0">{{$t('message.timeAlso')+ item.time[2] +$t('message.timeMinutes')+$t('message.timeStart')}}</span>-->
-                <!--<span v-else-if="item.time[0]===0 && item.time[1]===0 && item.time[2]===0">{{$t('message.timeAlso')+ 1+$t('message.timeMinutes')+$t('message.timeStart')}}</span>-->
-                <!--<span v-else>{{$t('message.timeAlso') + item.time[0] +$t('message.timeDays')+ item.time[1] +$t('message.timeHours')+ item.time[2] +$t('message.timeMinutes')+$t('message.timeStart')}}</span>-->
-              <!--</div>-->
-              <!--<div v-show="item.status===2">-->
-                <!--<span v-if="item.time[0]===0 && item.time[1]!==0">{{$t('message.timeAlso')+item.time[1]+$t('message.timeHours')+item.time[2]+$t('message.timeMinutes')+$t('message.timeEnd')}}</span>-->
-                <!--<span v-else-if="item.time[0]===0 && item.time[1]===0 && item.time[2]!==0">{{$t('message.timeAlso')+item.time[2]+$t('message.timeMinutes')+$t('message.timeEnd')}}</span>-->
-                <!--<span v-else-if="item.time[0]===0 && item.time[1]===0 && item.time[2]===0">{{$t('message.timeAlso')+1+$t('message.timeMinutes')+$t('message.timeEnd')}}</span>-->
-                <!--<span v-else>{{$t('message.timeAlso')+item.time[0]+$t('message.timeDays')+item.time[1]+$t('message.timeHours')+item.time[2]+$t('message.timeMinutes')+$t('message.timeEnd')}}</span>-->
-              <!--</div>-->
               <div v-show="item.status===1 || item.status===2">
                 <span>
                   <span>{{$t('message.timeAlso')}}</span>
@@ -74,14 +62,6 @@
                   <span v-show="item.status===2">{{$t('message.timeEnd')}}</span>
                 </span>
               </div>
-              <!--<div v-show="item.status===2">-->
-                <!--<span>{{$t('message.timeAlso')}}</span>-->
-                <!--<span v-if="item.time[0]===0 && item.time[1]!==0">{{item.time[1]}}{{item.time[1]===1 ? $t('message.timeHour') : $t('message.timeHours')}}{{item.time[2]}}{{item.time[2]===1 ? $t('message.timeMinute'):$t('message.timeMinutes')}}</span>-->
-                <!--<span v-else-if="item.time[0]===0 && item.time[1]===0 && item.time[2]!==0">{{item.time[2]}}{{item.time[2]===1 ? $t('message.timeMinute'):$t('message.timeMinutes')}}</span>-->
-                <!--<span v-else-if="item.time[0]===0 && item.time[1]===0 && item.time[2]===0">{{1+$t('message.timeMinute')}}</span>-->
-                <!--<span v-else>{{item.time[0]}}{{item.time[0]===1 ? $t('message.timeDay'):$t('message.timeDays')}}{{item.time[1]}}{{item.time[1]===1 ? $t('message.timeHour') : $t('message.timeHours')}}{{item.time[2]}}{{item.time[2]===1 ? $t('message.timeMinute'):$t('message.timeMinutes')}}</span>-->
-                <!--<span>{{$t('message.timeEnd')}}</span>-->
-              <!--</div>-->
               <div v-show="item.status===4">
                 <span>{{item.time}}</span>
               </div>
@@ -197,7 +177,7 @@
           .then((response) => {
             if (response.code==='2000000') {
               this.loading = false;
-              //console.log(response.data)
+              //console.log(response.data);
               this.totalAll=response.data.total;
               this.txList=response.data.list;
               for(let i in response.data.list){
@@ -234,7 +214,7 @@
             }
           }).catch(err => {
           this.loading = false;
-          console.log(err);
+          //console.log(err);
           this.$message({
             //message: this.$t('message.failed') +':'+this.$t('message.'+err.code), type: 'warning', duration: '1000'
             message: this.$t('message.failed'), type: 'warning', duration: '1000'
@@ -246,15 +226,35 @@
       * Jump to history
       * */
       voteHistory(){
-        this.$router.push({
+
+        if (localStorage.hasOwnProperty('address')) {
+          this.$router.push({
+            name: '/voteHistory',
+          })
+        } else {
+          this.$message({
+            message: this.$t('message.prompt'), type: 'warning', duration: '1000'
+          });
+        }
+
+        /*this.$router.push({
           name: '/voteHistory',
-        })
+        })*/
       },
       //create vote
       createVote(){
-        this.$router.push({
+        if (localStorage.hasOwnProperty('address')) {
+            this.$router.push({
+              name: '/createVote',
+            })
+          } else {
+            this.$message({
+              message: this.$t('message.prompt'), type: 'warning', duration: '1000'
+            });
+          }
+        /*this.$router.push({
           name: '/createVote',
-        })
+        })*/
       },
       //vote detail
       voteDetail(id){

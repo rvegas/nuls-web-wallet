@@ -49,18 +49,6 @@
               <div v-show="item.status===0">
                 <span>{{item.time}}</span>
               </div>
-              <!--<div v-show="item.status===1">-->
-                <!--<span v-if="item.time[0]===0 && item.time[1]!==0">{{$t('message.timeAlso')+item.time[1]+$t('message.timeHours')+item.time[2]+$t('message.timeMinutes')+$t('message.timeStart')}}</span>-->
-                <!--<span v-else-if="item.time[0]===0 && item.time[1]===0 && item.time[2]!==0">{{$t('message.timeAlso')+item.time[2]+$t('message.timeMinutes')+$t('message.timeStart')}}</span>-->
-                <!--<span v-else-if="item.time[0]===0 && item.time[1]===0 && item.time[2]===0">{{$t('message.timeAlso')+1+$t('message.timeMinutes')+$t('message.timeStart')}}</span>-->
-                <!--<span v-else>{{$t('message.timeAlso')+item.time[0]+$t('message.timeDays')+item.time[1]+$t('message.timeHours')+item.time[2]+$t('message.timeMinutes')+$t('message.timeStart')}}</span>-->
-              <!--</div>-->
-              <!--<div v-show="item.status===2">-->
-                <!--<span v-if="item.time[0]===0 && item.time[1]!==0">{{$t('message.timeAlso')+item.time[1]+$t('message.timeHours')+item.time[2]+$t('message.timeMinutes')+$t('message.timeEnd')}}</span>-->
-                <!--<span v-else-if="item.time[0]===0 && item.time[1]===0 && item.time[2]!==0">{{$t('message.timeAlso')+item.time[2]+$t('message.timeMinutes')+$t('message.timeEnd')}}</span>-->
-                <!--<span v-else-if="item.time[0]===0 && item.time[1]===0 && item.time[2]===0">{{$t('message.timeAlso')+1+$t('message.timeMinutes')+$t('message.timeEnd')}}</span>-->
-                <!--<span v-else>{{$t('message.timeAlso')+item.time[0]+$t('message.timeDays')+item.time[1]+$t('message.timeHours')+item.time[2]+$t('message.timeMinutes')+$t('message.timeEnd')}}</span>-->
-              <!--</div>-->
               <div v-show="item.status===1 || item.status===2">
                 <span>
                   <span>{{$t('message.timeAlso')}}</span>

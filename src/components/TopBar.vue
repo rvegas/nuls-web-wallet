@@ -2,8 +2,8 @@
   <div class="top">
     <el-row class="top-info">
       <el-col :span="3" class="logo cursor-p">
-        <img @click="toHome" src="../assets/images/logo.svg"/>
-        <!--<img @click="toHome" src="../assets/images/testnet-logo.svg"/>-->
+        <img v-show="runing" @click="toHome" src="../assets/images/logo.svg"/>
+        <img v-show="!runing" @click="toHome" src="../assets/images/testnet-logo.svg"/>
       </el-col>
       <el-col :span="14" class="menu">
          <el-menu :default-active="activeNav" class="top-menu top-menu-left" mode="horizontal" @select="handleSelect">
@@ -27,10 +27,10 @@
              <i class="iconfont iconfont-common-white">&#xe68f;</i>
              <span>{{ $t('message.browser') }}</span>
            </el-menu-item>
-           <!--<el-menu-item index="6" :class="[activeNav==='6'? 'is-active':'no-active',this.language==='en' ? 'li-en':'']">-->
-             <!--<i class="iconfont iconfont-common-white iconfont-20">&#xe62e;</i>-->
-             <!--<span>{{ $t('message.testNuls') }}</span>-->
-           <!--</el-menu-item>-->
+           <el-menu-item v-show="!runing" index="6" :class="[activeNav==='6'? 'is-active':'no-active',this.language==='en' ? 'li-en':'']">
+             <i class="iconfont iconfont-common-white iconfont-20">&#xe62e;</i>
+             <span>{{ $t('message.testNuls') }}</span>
+           </el-menu-item>
          </el-menu>
       </el-col>
       <el-col :span="7" class="top-icon">
@@ -95,10 +95,10 @@
               <i class="iconfont iconfont-common-white">&#xe68f;</i>
               <span slot="title">{{ $t('message.browser') }}</span>
             </el-menu-item>
-            <!--<el-menu-item index="6" @click="showMenu" :class="activeNav==='6'? 'is-active':'no-active'">-->
-              <!--<i class="iconfont iconfont-common-white iconfont-20">&#xe62e;</i>-->
-              <!--<span slot="title">{{ $t('message.testNuls') }}</span>-->
-            <!--</el-menu-item>-->
+            <el-menu-item v-show="!runing" index="6" @click="showMenu" :class="activeNav==='6'? 'is-active':'no-active'">
+              <i class="iconfont iconfont-common-white iconfont-20">&#xe62e;</i>
+              <span slot="title">{{ $t('message.testNuls') }}</span>
+            </el-menu-item>
             <el-menu @select="handleSelect2">
               <el-submenu index="5">
                 <template slot="title">
@@ -141,6 +141,7 @@
 
 <script>
   import {contentMinHeight,versions} from '@/utils/util'
+  import {RUN_DEV} from '@/config'
   import nulsJs from 'nuls-jssdk'
 
   export default {
@@ -157,6 +158,9 @@
         ],
         //设置下拉框的下拉，隐藏状态
         openFlg:false,
+
+        //运行环境
+        runing:RUN_DEV,
       };
     },
     computed: {
@@ -174,6 +178,7 @@
       }
     },
     created() {
+      console.log(this.runing+'0.0.4');
       if (sessionStorage.getItem('activeNav')) {
         this.$store.commit('refreshActiveNav', sessionStorage.getItem('activeNav'))
       }
@@ -196,7 +201,6 @@
         this.languageValue='English'
       }
       this.selectLanguage();
-      console.log("v0.0.2");
       this.$nextTick(() => {
         setTimeout(() => {
           contentMinHeight();
@@ -286,7 +290,12 @@
           //window.open('https://nulscan.io/', '_blank')
           window.open(this.$store.getters.getBrowserAddress, '_blank');
         }else if (key === '5') {
-          if (localStorage.hasOwnProperty('address')) {
+          this.$store.commit('setActiveNav', key);
+          sessionStorage.setItem("activeNav", key);
+          this.$router.push({
+            name: '/voteList',
+          })
+          /*if (localStorage.hasOwnProperty('address')) {
             this.$store.commit('setActiveNav', key);
             sessionStorage.setItem("activeNav", key);
             this.$router.push({
@@ -296,7 +305,7 @@
             this.$message({
               message: this.$t('message.prompt'), type: 'warning', duration: '1000'
             });
-          }
+          }*/
         } else if (key === '6') {
           this.$store.commit('setActiveNav', key);
           sessionStorage.setItem("activeNav", key);
