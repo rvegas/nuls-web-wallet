@@ -282,7 +282,6 @@
     destroyed() {
     },
     methods: {
-      //单选，多选
       /**
       * 单选，多选
       * selection event
@@ -298,12 +297,14 @@
         this.getFee();
       },
       /**
+      * 至少选几项
       * Choose a few at least
       * */
       hasMinSelect(){
         this.getFee()
       },
       /**
+      * 至多选几项
       * Pick up at most
       * */
       hasMaxSelect(){

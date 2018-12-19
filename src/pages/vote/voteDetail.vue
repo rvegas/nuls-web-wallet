@@ -397,10 +397,8 @@
                 }
               });
               for (let i in response.data.items) {
-                // response.data.items[i].amount=Math.floor(LeftShiftEight(response.data.items[i].amount)).toString();
                 response.data.items[i].openFlg = false;
               }
-              //this.voteInfo.amount = Math.floor(LeftShiftEight(this.voteInfo.amount)).toString();
               _this.voteInfo.timePer = (Date.parse(new Date()) - _this.voteInfo.startTime) / (_this.voteInfo.endTime - _this.voteInfo.startTime);
               let timeStartSlot = response.data.startTime - Date.parse(new Date());
               let timeEndSlot = response.data.endTime - Date.parse(new Date());
@@ -434,11 +432,9 @@
           _this.loading = false;
           //console.log(err);
           _this.$message({
-            //message: this.$t('message.failed') +':'+this.$t('message.'+err.code), type: 'warning', duration: '1000'
             message: _this.$t('message.failed'), type: 'warning', duration: '1000'
           });
         })
-        // }
       },
 
       /**
@@ -582,9 +578,6 @@
                 this.loadingExpand = false;
                 //console.log(response.data)
                 this.voteDetailList = response.data.list
-                // for (let i in this.voteDetailList) {
-                //   this.voteDetailList[i].weight = Math.floor(LeftShiftEight(this.voteDetailList[i].weight)).toString();
-                // }
               } else {
                 this.loadingExpand = false;
                 this.$message({
@@ -596,7 +589,6 @@
             }).catch(err => {
             this.loadingExpand = false;
             this.$message({
-              //message: this.$t('message.failed') +':'+this.$t('message.'+err.code), type: 'warning', duration: '1000'
               message: this.$t('message.failed') + err.code, type: 'warning', duration: '1000'
             });
           })

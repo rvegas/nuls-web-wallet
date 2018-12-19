@@ -98,7 +98,6 @@ export function versions() {
     }else{
       mobileVersions = false
     }
-    //console.log(navigator.userAgent)
   return {
     mobileVersions
   };

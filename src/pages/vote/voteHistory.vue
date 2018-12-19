@@ -235,8 +235,8 @@
       next();
     },
     beforeRouteLeave(to, from, next) {
-      clearInterval(this.voteHistorySetInterval)
-      clearInterval(this.voteHistorySetInterval2)
+      clearInterval(this.voteHistorySetInterval);
+      clearInterval(this.voteHistorySetInterval2);
       if(to.name ==='/voteDetail'){
         from.meta.keepAlive = true;
       }else {

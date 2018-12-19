@@ -214,9 +214,7 @@
             }
           }).catch(err => {
           this.loading = false;
-          //console.log(err);
           this.$message({
-            //message: this.$t('message.failed') +':'+this.$t('message.'+err.code), type: 'warning', duration: '1000'
             message: this.$t('message.failed'), type: 'warning', duration: '1000'
           });
         })
@@ -236,10 +234,6 @@
             message: this.$t('message.prompt'), type: 'warning', duration: '1000'
           });
         }
-
-        /*this.$router.push({
-          name: '/voteHistory',
-        })*/
       },
       //create vote
       createVote(){
@@ -252,9 +246,6 @@
               message: this.$t('message.prompt'), type: 'warning', duration: '1000'
             });
           }
-        /*this.$router.push({
-          name: '/createVote',
-        })*/
       },
       //vote detail
       voteDetail(id){

@@ -36,12 +36,6 @@
       <el-col :span="7" class="top-icon">
         <el-menu :default-active="activeNav" class="top-menu flex-common" mode="horizontal" >
           <div class="flex-common">
-            <!--<el-submenu index="5" class="set">-->
-              <!--<template slot="title">{{ $t('message.set') }}</template>-->
-              <!--<el-menu-item index="5-1">{{ $t('message.accountBackups') }}</el-menu-item>-->
-              <!--<el-menu-item index="5-2">{{ $t('message.editPassword') }}</el-menu-item>-->
-              <!--<el-menu-item index="5-3" v-show="aliasFlag==='null'">{{ $t('message.setAlias') }}</el-menu-item>-->
-            <!--</el-submenu>-->
             <el-dropdown class="set" trigger="click" placement="bottom-start" @command="setTo" @visible-change="set($event)" :class="openFlg ? 'is-focus':''">
               <span class="el-dropdown-link">{{ $t('message.set') }}</span>
               <el-dropdown-menu slot="dropdown">
@@ -72,17 +66,14 @@
         <div class="memu-ml-div" @click.stop="closeMenu !==closeMenu">
           <el-menu default-active="1" @select="handleSelect">
             <el-menu-item index="1" @click="showMenu" :class="activeNav==='1'? 'is-active':'no-active'">
-              <!--<i class="icon-i1 icon-common"></i>-->
               <i class="iconfont iconfont-common-white">&#xe613;</i>
               <span slot="title">{{ $t('message.account') }}</span>
             </el-menu-item>
             <el-menu-item index="2" @click="showMenu" :class="activeNav==='2'? 'is-active':'no-active'">
-              <!--<i class="icon-i2 icon-common"></i>-->
               <i class="iconfont iconfont-common-white">&#xe615;</i>
               <span slot="title">{{ $t('message.transfer') }}</span>
             </el-menu-item>
             <el-menu-item index="3" @click="showMenu" :class="activeNav==='3'? 'is-active':'no-active'">
-              <!--<i class="icon-i3 icon-common"></i>-->
               <i class="iconfont iconfont-common-white">&#xe618;</i>
               <span slot="title">{{ $t('message.consensus') }}</span>
             </el-menu-item>
@@ -91,7 +82,6 @@
               <span slot="title">{{ $t('message.vote') }}</span>
             </el-menu-item>
             <el-menu-item index="4" @click="showMenu" :class="activeNav==='4'? 'is-active':'no-active'">
-              <!--<i class="icon-i4 icon-common"></i>-->
               <i class="iconfont iconfont-common-white">&#xe68f;</i>
               <span slot="title">{{ $t('message.browser') }}</span>
             </el-menu-item>
@@ -158,7 +148,6 @@
         ],
         //设置下拉框的下拉，隐藏状态
         openFlg:false,
-
         //运行环境
         runing:RUN_DEV,
       };
