@@ -701,7 +701,7 @@
           "userAlias": _this.addressAlias === 'null' ? '' : _this.addressAlias,
           "voteId": _this.$route.query.voteId,
           "gasLimit": _this.feeOriginal,
-          "password": _this.password,
+          //"password": _this.password,
         };
         getVote(params).then((response) => {
           if (response.code === '2000000') {

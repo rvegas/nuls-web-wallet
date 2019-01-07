@@ -617,7 +617,7 @@ const cn = {
     voteDetail7:'个选项，提交投票后无法更改',
     voteDetail14:'个选项，提交投票后可以更改',
     voteDetail15:'您只能选择其中一个选项，提交后，您可以更改您的投票。',
-    voteDetail25:'您只能选择其中一个选项，提交后，您可以不能更改您的投票。',
+    voteDetail25:'您只能选择其中一个选项，提交后，您不能更改您的投票。',
     voteDetail8:'选项',
     voteDetail9:'得票数',
     voteDetail10:'占比',
