@@ -682,10 +682,6 @@ const en = {
     createVoteError5:'At least option and at most options cannot be 1 at the same time',
     createVoteSuccess:'createVoteSuccess: The voting you have created has been initiated. It takes about a minute to confirm. Please be patient.',
 
-
-
-
-
     //bottom
     nodeAddress: 'Api-server:',
     delay: 'Delay',
@@ -698,6 +694,7 @@ const en = {
     termsService: 'Service agreement',
     privacyPolicy: 'Privacy policy',
     about: 'About',
+    bugReport:'Bug Report',
   },
 
   ...enLocale

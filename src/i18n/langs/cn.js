@@ -698,7 +698,7 @@ const cn = {
     termsService:'服务协议',
     privacyPolicy:'隐私政策',
     about:'关于',
-
+    bugReport:'问题反馈',
   },
   ...zhLocale
 };

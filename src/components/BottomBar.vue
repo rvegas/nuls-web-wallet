@@ -5,17 +5,19 @@
         <!--<p class="footer-left1"><i class="icon-bottom icon-common"></i></p>-->
         <p class="footer-left1"><img src="../assets/images/logo.svg"/></p>
         <p class="footer-left2">
-          <span>{{ $t('message.nodeAddress') }}</span><span @click="toServiceAddress" class="cursor-p text-d">{{nodeAddress}}&nbsp;</span>
+          <span>{{$t('message.height')}}{{this.heightInfo.height}}</span>
+          <span>{{$t('message.outTime')}}{{this.heightInfo.createTime}}</span>
+          <span class="cursor-p text-d" @click="toBugReport">{{$t('message.bugReport')}}</span>
+          <span v-show="false">{{ $t('message.nodeAddress') }}</span><span @click="toServiceAddress"
+                                                                           class="cursor-p text-d" v-show="false">{{nodeAddress}}&nbsp;</span>
           <span style="display:none">{{ $t('message.delay') }}{{this.delay}} MS</span>
-          <span>{{ $t('message.height') }}{{this.heightInfo.height}}</span>
-          <span>{{ $t('message.outTime') }}{{this.heightInfo.createTime}}</span>
         </p>
         <p class="footer-left3">
           <!-- <span>{{ $t('message.nowHeightInof') }}:</span>-->
           <!--<span>{{ $t('message.transactionNumber') }}：{{this.heightInfo.txCount}}</span>-->
           <!--<span>{{ $t('message.profit') }}：{{this.heightInfo.reward}} NULS</span>-->
           <!--<span-->
-            <!--:title=heightInfo.consensusAddress>{{ $t('message.outName') }}：{{this.heightInfo.consensusAddresss}} </span>-->
+          <!--:title=heightInfo.consensusAddress>{{ $t('message.outName') }}：{{this.heightInfo.consensusAddresss}} </span>-->
         </p>
       </div>
       <div class="footer-right">
@@ -32,6 +34,7 @@
   import moment from 'moment'
   import nulsJs from 'nuls-jssdk'
   import {LeftShiftEight} from './../utils/util'
+  import {RUN_DEV} from '@/config'
 
   export default {
     name: "bottom-bar",
@@ -59,9 +62,9 @@
       let time1 = new Date().getTime();
       setInterval(() => {
         this.getHeightInfo();
-        this.delay = parseInt((new Date().getTime() - time1)/1000);
+        this.delay = parseInt((new Date().getTime() - time1) / 1000);
         this.$store.commit('setDelay', this.delay);
-        localStorage.setItem("delay",this.delay);
+        localStorage.setItem("delay", this.delay);
         time1 = new Date().getTime();
         this.$store.commit('setHeightFlg', "1");
       }, 10000);
@@ -81,17 +84,19 @@
             _this.heightInfo.createTime = moment(data.data.createTime).format('YYYY-MM-DD HH:mm:ss');
             _this.heightInfo.reward = LeftShiftEight(data.data.reward).toString();
             _this.heightInfo.consensusAddresss = data.data.consensusAddress.substr(0, 4) + '...' + data.data.consensusAddress.substr(data.data.consensusAddress.length - 4, 4);
-            sessionStorage.setItem("nodeError","1")
+            sessionStorage.setItem("nodeError", "1")
           } else {
-            sessionStorage.setItem("nodeError","0");
-            if(_this.$store.getters.getHeightFlg==='0'){
+            sessionStorage.setItem("nodeError", "0");
+            if (_this.$store.getters.getHeightFlg === '0') {
               if (sessionStorage.getItem('nodeError') === '0') {
                 _this.$message({
                   message: _this.$t('message.nodeError'), type: 'warning', duration: '1000'
                 });
-              }else{
+              } else {
                 _this.$message({
-                  message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
+                  message: _this.$t('message.failed') + ':' + _this.$t('message.' + data.code),
+                  type: 'warning',
+                  duration: '1000'
                 });
               }
             }
@@ -109,10 +114,23 @@
             _this.getHeightInfo();
           } else {
             _this.$message({
-              message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
+              message: _this.$t('message.failed') + ':' + _this.$t('message.' + data.code),
+              type: 'warning',
+              duration: '1000'
             });
           }
         });
+      },
+
+      /**
+       *  问题反馈 跳转
+       **/
+      toBugReport() {
+        if(RUN_DEV){
+          window.open('https://nuls.community/d/135-collect-the-bugs-of-the-mainnet-bugs', '_blank');
+        }else {
+          window.open('https://nuls.community/d/134-collect-the-bugs-of-the-testnet-bugs/2', '_blank');
+        }
       },
 
       /**
@@ -174,7 +192,7 @@
         .footer-left1 {
           margin-top: 5px;
           margin-bottom: 1px;
-          img{
+          img {
             width: 70px;
             //height: 29px;
           }
@@ -187,16 +205,16 @@
         }
         .footer-left2 {
           /*span {*/
-            /*max-width: 100px;*/
+          /*max-width: 100px;*/
           /*}*/
-          .height-footer{
-            display:none;
+          .height-footer {
+            display: none;
           }
-          span:nth-child(4){
-            padding-left:15px;
+          span{
+            padding-left: 15px;
           }
-          span:nth-child(5){
-            padding-left:15px;
+          span:first-child {
+            padding-left: 0;
           }
         }
         p {
@@ -207,15 +225,15 @@
         display: flex;
         justify-content: right;
         align-items: center;
-        .height-footer{
-          display:none;
+        .height-footer {
+          display: none;
         }
         div {
           border-left: @border4;
           padding: 0 18px 0;
-          &:hover{
+          &:hover {
             color: @c-select-font-hover;
-           /* background-color: @bg-h-color;*/
+            /* background-color: @bg-h-color;*/
           }
         }
         div:first-child {
@@ -233,20 +251,21 @@
       }
     }
   }
-  @media screen and (max-width: 768px){
-    .bottom{
-      padding:10px 0;
-      .footer{
-        .footer-left1,.footer-left2{
-          display:none;
+
+  @media screen and (max-width: 768px) {
+    .bottom {
+      padding: 10px 0;
+      .footer {
+        .footer-left1, .footer-left2 {
+          display: none;
         }
-        .footer-right{
-          justify-content: center!important;
-          .height-footer{
-            display:block;
+        .footer-right {
+          justify-content: center !important;
+          .height-footer {
+            display: block;
           }
-          div{
-            padding:0 0.25rem;
+          div {
+            padding: 0 0.25rem;
           }
         }
       }

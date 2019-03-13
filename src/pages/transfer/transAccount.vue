@@ -4,33 +4,36 @@
       <h1 class="h1">NULS {{ $t('message.transAccountTitle') }}</h1>
       <el-form :model="transferForm" :rules="transferRules" ref="transferForm">
         <el-form-item :label="$t('message.transAccountTips1')" prop="address">
-          <el-input type="text" v-model.trim="transferForm.address" :maxlength="50" @change="getTransFee"></el-input>
+          <el-input type="text" v-model.trim="transferForm.address" :maxlength="50" @change="getTransFee">
+          </el-input>
         </el-form-item>
         <el-form-item :label="$t('message.transAccountTips2')" prop="account">
           <template>
             <div class="balance">{{ $t('message.transAccountTips3') }}{{this.addressUsable}} NULS</div>
           </template>
-          <el-input type="text" v-model.trim="transferForm.account" :maxlength="17" @change="getTransFee"></el-input>
+          <el-input type="text" v-model.trim="transferForm.account" :maxlength="17" @change="getTransFee">
+          </el-input>
         </el-form-item>
         <el-form-item :label="$t('message.transAccountTips4')" prop="remark">
-          <el-input type="textarea" v-model.trim="transferForm.remark" :maxlength="30"
-                    onkeyup="this.value=this.value.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g,'')"
-                    @mouseout.native="transferForm.remark=transferForm.remark.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g,'')"
-                    @change="getTransFee"></el-input>
-          <div class="text-length">{{transferForm.remark.length}}/30</div>
+          <el-input type="textarea" v-model.trim="transferForm.remark" :maxlength="50"
+                    @change="getTransFee">
+          </el-input>
+          <div class="text-length">{{transferForm.remark.length}}/50</div>
         </el-form-item>
 
         <el-form-item :label="$t('message.transAccountPrice')" class="custom-fee" v-show="switchValue" prop="fees">
           <template>
             <div class="size">{{ $t('message.transAccountSize') }}{{this.transAccountSize}}kb</div>
           </template>
-          <el-input type="text" v-model="transferForm.fees"></el-input>
+          <el-input type="text" v-model="transferForm.fees">
+          </el-input>
           <div class="fee">{{ $t('message.transAccountTips5') }}{{this.transferFee}} NULS</div>
         </el-form-item>
 
         <div class="progress" v-show="!switchValue">
           <div>{{ $t('message.transAccountTips5') }}</div>
-          <el-slider v-model.trim="transferForm.rate" :format-tooltip="formatTooltip" @change="getTransFee()" :min=1 :max=10></el-slider>
+          <el-slider v-model.trim="transferForm.rate" :format-tooltip="formatTooltip" @change="getTransFee()" :min=1 :max=10>
+          </el-slider>
           <div class="flex-common">
             <div>{{ $t('message.low') }}</div>
             <div>{{ $t('message.high') }}</div>
@@ -55,7 +58,7 @@
 <script>
   import nulsJs from 'nuls-jssdk'
   import {BigNumber} from 'bignumber.js'
-  import {LeftShiftEight, RightShiftEight, getLocalTime} from '@/utils/util'
+  import {LeftShiftEight, RightShiftEight, getLocalTime,htmlEncodeByRegExp} from '@/utils/util'
   import Password from '@/components/PasswordBar.vue'
   import {address, numbers,numbers2,numbers3} from '@/utils/validate'
 
@@ -293,6 +296,7 @@
             });
         }
       },
+
       /**
        * 获取密码提交请求
        * get password submit
@@ -304,7 +308,7 @@
           "money": RightShiftEight(this.transferForm.account).toString(),
           "address": localStorage.getItem("address"),
           "toAddress": this.transferForm.address,
-          "remark": this.transferForm.remark,
+          "remark": htmlEncodeByRegExp(this.transferForm.remark),
           "price": RightShiftEight(this.transferForm.fees).toString(),
           "pri": localStorage.getItem("encryptedPrivateKey"),
           "pub":localStorage.getItem('pubKey'),
@@ -368,6 +372,12 @@
         }
         .el-form-item__content {
           line-height: 0;
+          .long_height{
+            height: 80px;
+            input{
+              height: 80px;
+            }
+          }
         }
       }
       .el-form-item:nth-child(2) {

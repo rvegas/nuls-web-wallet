@@ -342,7 +342,6 @@
       /**
        * 根据地址获取账户信息
        * User info by address
-       * @param address
        **/
       getAddressInfo() {
         let _this = this;
@@ -353,7 +352,7 @@
             _this.userInfo.locked = LeftShiftEight(data.data.locked).toString();
             _this.userInfo.usable = LeftShiftEight(data.data.usable).toString();
           }else{
-            console.log('index')
+            console.log('index');
             _this.$message({
               message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
             });
