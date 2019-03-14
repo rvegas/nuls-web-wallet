@@ -6,7 +6,7 @@ let host = window.location.host; //获取地址和端口
 export const API_TIME = IS_DEV ? '6000' : '16000';
 
 //运行环境（true:正式环境，false:测试环境）
-export const RUN_DEV = false;
+export const RUN_DEV = true;
 
 //Request url
 //测试网是http,正式环境是https
