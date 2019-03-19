@@ -9,7 +9,7 @@ axios.defaults.headers.put['Content-Type'] = 'application/json';
  * 封装get方法
  * Encapsulation get method
  * @param url
- * @param data
+ * @param params
  * @returns {Promise}
  */
 export function fetch (url, params = {}) {
