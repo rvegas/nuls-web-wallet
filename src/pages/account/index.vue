@@ -36,7 +36,7 @@
               <td :data-label="$t('message.index8')">{{this.userInfo.usable}}</td>
               <td :data-label="$t('message.index9')">
                 <span class="cursor-p" @click="transferAccounts">{{$t('message.index10')}}</span>
-                <span class="cursor-p" @click="makeCollections">{{$t('message.index11')}}</span>
+                <span class="cursor-p" @click="makeCollections"><!--{{$t('message.index11')}}--> {{$t('message.zero')}}</span>
               </td>
             </tr>
             </tbody>
@@ -72,19 +72,19 @@
               @change="changeTime">
             </el-date-picker>
             <span class="date-line">—</span>
-              <el-date-picker
-                v-model="endTime"
-                type="date"
-                :placeholder="$t('message.createVote19')"
-                :picker-options="endDatePicker"
-                @change="changeTime">
-              </el-date-picker>
+            <el-date-picker
+              v-model="endTime"
+              type="date"
+              :placeholder="$t('message.createVote19')"
+              :picker-options="endDatePicker"
+              @change="changeTime">
+            </el-date-picker>
             <div class="search-btn">
               <el-button type="primary" @click="emptyAll">{{$t('message.index20')}}</el-button>
             </div>
           </div>
         </div>
-        <table class="table">
+        <table class="table" v-loading="loading">
           <thead>
           <tr>
             <th>{{$t('message.index13')}}</th>
@@ -97,10 +97,13 @@
           <tbody v-if="txList.length!==0">
           <tr v-for="item in txList">
             <td :data-label="$t('message.index13')">{{ $t('message.type'+item.type) }}</td>
-            <td data-label="TxID" v-if="item.state===1" class="text-href" @click="transDetail(item.hash,item.state)">{{item.hashs}}</td>
+            <td data-label="TxID" v-if="item.state===1" class="text-href" @click="transDetail(item.hash,item.state)">
+              {{item.hashs}}
+            </td>
             <td data-label="TxID" v-else>{{item.hashs}}</td>
             <td :data-label="$t('message.index14')">{{item.createTime}}</td>
-            <td :data-label="$t('message.index15')"> <span :class="item.amount > 0 ? 'add':'minus'">{{item.amount> 0 ? '+':''}}{{item.amount }}</span></td>
+            <td :data-label="$t('message.index15')"><span :class="item.amount > 0 ? 'add':'minus'">{{item.amount> 0 ? '+':''}}{{item.amount }}</span>
+            </td>
             <td :data-label="$t('message.index16')">{{$t('message.statusS'+item.state)}}</td>
           </tr>
           </tbody>
@@ -206,8 +209,8 @@
          * */
         startTime: new Date(Date.parse(new Date()) - 7 * 24 * 3600 * 1000),
         endTime: new Date(Date.parse(new Date()) + 24 * 3600 * 1000),
-        startDatePicker:this.beginDate(),
-        endDatePicker:this.processDate(),
+        startDatePicker: this.beginDate(),
+        endDatePicker: this.processDate(),
         //timeValue: [new Date(Date.parse(new Date()) - 7 * 24 * 3600 * 1000), new Date(Date.parse(new Date()) + 23 * 3600 * 1000)],
 
         /**
@@ -229,21 +232,21 @@
     },
     mounted() {
       this.pageNumber = 1;
-      if(localStorage.hasOwnProperty('address')){
+      if (localStorage.hasOwnProperty('address')) {
         this.getAddressInfo();
         this.getAddressTxList();
         this.getAlias();
       }
       this.homeSetInterval = setInterval(() => {
-        if(localStorage.hasOwnProperty('address')){
+        if (localStorage.hasOwnProperty('address')) {
           this.getAddressInfo();
           this.getAddressTxList();
           this.getAlias();
         }
       }, 10000);
     },
-    activated(){
-      if(localStorage.hasOwnProperty('address')){
+    activated() {
+      if (localStorage.hasOwnProperty('address')) {
         this.getAddressInfo();
         this.getAddressTxList();
         this.getAlias();
@@ -277,8 +280,8 @@
           "pageNumber": this.pageNumber,
           "pageSize": this.pageSize,
           "type": this.typeValue,
-          "startTime":this.startTime ? Date.parse(this.startTime):'',
-          "endTime": this.endTime ? Date.parse(this.endTime)+ 24 * 3600 * 1000:''
+          "startTime": this.startTime ? Date.parse(this.startTime) : '',
+          "endTime": this.endTime ? Date.parse(this.endTime) + 24 * 3600 * 1000 : ''
         };
         //console.log(params);
         if (this.statusValue === 0) {
@@ -288,51 +291,55 @@
               _this.loading = false;
               _this.txList = data.data.list;
               _this.totalAll = data.data.total;
-              for (let i=0;i<data.data.list.length;i++) {
-                if(data.data.list[i].type.toString() ==='4'||data.data.list[i].type.toString() ==='5'){
-                  data.data.list[i].amount = "lock"+LeftShiftEight(data.data.list[i].amount).toString();
-                }else if(data.data.list[i].type.toString() ==='6' || data.data.list[i].type.toString() ==='9'){
-                  data.data.list[i].amount = "unlock"+LeftShiftEight(data.data.list[i].amount).toString();
-                }else {
+              for (let i = 0; i < data.data.list.length; i++) {
+                if (data.data.list[i].type.toString() === '4' || data.data.list[i].type.toString() === '5') {
+                  data.data.list[i].amount = "lock" + LeftShiftEight(data.data.list[i].amount).toString();
+                } else if (data.data.list[i].type.toString() === '6' || data.data.list[i].type.toString() === '9') {
+                  data.data.list[i].amount = "unlock" + LeftShiftEight(data.data.list[i].amount).toString();
+                } else {
                   data.data.list[i].amount = LeftShiftEight(data.data.list[i].amount).toString();
                 }
                 data.data.list[i].hashs = data.data.list[i].hash.substr(0, 20) + '...' + data.data.list[i].hash.substr(data.data.list[i].hash.length - 20, 20);
                 data.data.list[i].createTime = moment(getLocalTime(data.data.list[i].createTime)).format('YYYY-MM-DD HH:mm:ss');
                 data.data.list[i].state = 0;
               }
-            }else{
+            } else {
               _this.loading = false;
               console.log('getWebwalletTxByAddress');
               _this.$message({
-                message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
+                message: _this.$t('message.failed') + ':' + _this.$t('message.' + data.code),
+                type: 'warning',
+                duration: '1000'
               });
             }
           });
         } else {
           nulsJs.getTxListByAddress(params, function (data) {
-          //console.log(data);
+            //console.log(data);
             if (data.success) {
               _this.loading = false;
               _this.txList = data.data.list;
               _this.totalAll = data.data.total;
-              for (let i=0;i<data.data.list.length;i++) {
-              // for (let i in data.data.list) {
-                if(data.data.list[i].type.toString() ==='4'||data.data.list[i].type.toString() ==='5'){
-                  data.data.list[i].amount = "lock"+LeftShiftEight(data.data.list[i].amount).toString();
-                }else if(data.data.list[i].type.toString() ==='6' || data.data.list[i].type.toString() ==='9'){
-                  data.data.list[i].amount = "unlock"+LeftShiftEight(data.data.list[i].amount).toString();
-                }else {
+              for (let i = 0; i < data.data.list.length; i++) {
+                // for (let i in data.data.list) {
+                if (data.data.list[i].type.toString() === '4' || data.data.list[i].type.toString() === '5') {
+                  data.data.list[i].amount = "lock" + LeftShiftEight(data.data.list[i].amount).toString();
+                } else if (data.data.list[i].type.toString() === '6' || data.data.list[i].type.toString() === '9') {
+                  data.data.list[i].amount = "unlock" + LeftShiftEight(data.data.list[i].amount).toString();
+                } else {
                   data.data.list[i].amount = LeftShiftEight(data.data.list[i].amount).toString();
                 }
                 data.data.list[i].hashs = data.data.list[i].hash.substr(0, 20) + '...' + data.data.list[i].hash.substr(data.data.list[i].hash.length - 20, 20);
                 data.data.list[i].createTime = moment(getLocalTime(data.data.list[i].createTime)).format('YYYY-MM-DD HH:mm:ss');
                 data.data.list[i].state = 1;
               }
-            }else{
+            } else {
               _this.loading = false;
               console.log('getTxListByAddress');
               _this.$message({
-                message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
+                message: _this.$t('message.failed') + ':' + _this.$t('message.' + data.code),
+                type: 'warning',
+                duration: '1000'
               });
             }
           });
@@ -351,10 +358,12 @@
             _this.userInfo.balance = LeftShiftEight(data.data.usable + data.data.locked).toString();
             _this.userInfo.locked = LeftShiftEight(data.data.locked).toString();
             _this.userInfo.usable = LeftShiftEight(data.data.usable).toString();
-          }else{
+          } else {
             console.log('index');
             _this.$message({
-              message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
+              message: _this.$t('message.failed') + ':' + _this.$t('message.' + data.code),
+              type: 'warning',
+              duration: '1000'
             });
           }
         });
@@ -375,6 +384,7 @@
        * Get tx list by type
        **/
       selectType() {
+        this.loading = true;
         this.getAddressTxList();
       },
 
@@ -391,6 +401,7 @@
        * Get tx list by status
        **/
       selectStatus() {
+        this.loading = true;
         this.getAddressTxList();
       },
 
@@ -428,9 +439,9 @@
       },
 
       /**
-      * 点击生成二维码
-      * Click generated two-dimensional code
-      * */
+       * 点击生成二维码
+       * Click generated two-dimensional code
+       * */
       codeMaker(codeInfo) {
         $('.qr-code').html("");
         $('.qr-code').qrcode({
@@ -452,9 +463,9 @@
       },
 
       /**
-      * 转账
-      * Transfer accounts
-      * */
+       * 转账
+       * Transfer accounts
+       * */
       transferAccounts() {
         this.$store.commit('setActiveNav', '2');
         sessionStorage.setItem("activeNav", '2');
@@ -464,21 +475,20 @@
       },
 
       /**
-      * 收款
-      * Receivables
-      * */
-      makeCollections() {
+       * 收款
+       * Receivables
+       * */
+      async makeCollections() {
         this.$store.commit('setActiveNav', '1');
         sessionStorage.setItem("activeNav", '1');
         this.$router.push({
-          name: '/makeCollections'
+          name: '/zeroToWhole'
         });
       },
-
       /**
-      * 交易详情
-      * transaction details
-      * */
+       * 交易详情
+       * transaction details
+       * */
       transDetail(hash, state) {
         this.$router.push({
           name: '/transDetail',
@@ -487,9 +497,9 @@
       },
 
       /**
-      * 跳转冻结列表
-      * freeze list
-      * */
+       * 跳转冻结列表
+       * freeze list
+       * */
       freezeList() {
         this.$router.push({
           name: '/freezeList'
@@ -506,48 +516,52 @@
           nulsJs.getAlias({"address": localStorage.getItem('address')}, function (data) {
             //console.log(data);
             if (data.success) {
-              if(data.data.alias){
+              if (data.data.alias) {
                 _this.addressAlias = data.data.alias;
-                _this.$store.commit('setAddressAlias',data.data.alias);
+                _this.$store.commit('setAddressAlias', data.data.alias);
                 localStorage.setItem('addressAlias', data.data.alias);
               }
-            }else{
+            } else {
               _this.$message({
-                message: _this.$t('message.failed') +':'+_this.$t('message.'+data.code), type: 'warning', duration: '1000'
+                message: _this.$t('message.failed') + ':' + _this.$t('message.' + data.code),
+                type: 'warning',
+                duration: '1000'
               });
             }
           });
         }
       },
-      beginDate(){
+      beginDate() {
         return {
-          disabledDate(time){
+          disabledDate(time) {
             return new Date().getTime() < time.getTime()
           }
         }
       },
+
       /**
-      * 结束时间必须大于开始时间
-      * End time must be greater than start time
-      * */
-      processDate(){
+       * 结束时间必须大于开始时间
+       * End time must be greater than start time
+       * */
+      processDate() {
         let _this = this;
         return {
-          disabledDate(time){
-            if(_this.startTime){
+          disabledDate(time) {
+            if (_this.startTime) {
               // return new Date(_this.createVoteForm.startTime).getTime() > time.getTime() || time.getTime() > Date.now()
-              return new Date(_this.startTime).getTime()-23 * 3600 * 1000 > time.getTime() || new Date().getTime() < time.getTime();
-            }else{
+              return new Date(_this.startTime).getTime() - 23 * 3600 * 1000 > time.getTime() || new Date().getTime() < time.getTime();
+            } else {
               return new Date().getTime() < time.getTime()
             }
           }
         }
       },
     },
+
     beforeRouteEnter(to, from, next) {
-      if(from.name ==='/transDetail'){
+      if (from.name === '/transDetail') {
         to.meta.keepAlive = true;
-      }else{
+      } else {
         to.meta.keepAlive = false;
       }
       next();
@@ -556,9 +570,9 @@
       //清除定时器 Clear timer
       clearInterval(this.homeSetInterval);
       clearInterval(this.homeSetInterval2);
-      if(to.name ==='/transDetail'){
+      if (to.name === '/transDetail') {
         from.meta.keepAlive = true;
-      }else {
+      } else {
         from.meta.keepAlive = false;
       }
       next();
@@ -662,29 +676,29 @@
         }
         .search-right {
           /*position: relative;*/
-          display:flex;
+          display: flex;
           justify-content: start;
           align-items: center;
           div:nth-child(1) {
             display: inline-block;
-            margin-right:5px;
+            margin-right: 5px;
             font-size: @font-size-14;
           }
-          .date-line{
-            margin:0 8px;
+          .date-line {
+            margin: 0 8px;
           }
           .el-date-editor {
             background: @bg-color;
             border: none;
             width: 150px;
-            .el-input__inner{
+            .el-input__inner {
               height: 34px;
               line-height: 34px;
             }
 
             /*.el-range-separator {*/
-              /*line-height: 34px;*/
-              /*width: 7%;*/
+            /*line-height: 34px;*/
+            /*width: 7%;*/
             /*}*/
             .el-input__icon {
               display: none;
@@ -699,7 +713,7 @@
               border-radius: 2px;
               height: 34px;
               line-height: 34px;
-              color:@c-color;
+              color: @c-color;
               &::-webkit-input-placeholder {
                 font-size: @font-size;
                 color: @c-ipt-placeholder;
@@ -717,7 +731,7 @@
             /*position: absolute;*/
             /*top: 3px;*/
             /*right: 0;*/
-            margin-left:5px;
+            margin-left: 5px;
             .el-button {
               width: 50px;
               height: 34px;
@@ -725,16 +739,16 @@
           }
         }
         /*@media screen and (max-width: 768px) {*/
-          /*.search-left, .search-right {*/
-            /*text-align: left;*/
-          /*}*/
+        /*.search-left, .search-right {*/
+        /*text-align: left;*/
+        /*}*/
 
-          /*.search-right {*/
-            /*.search-btn {*/
-              /*position: absolute;*/
-              /*left: 282px;*/
-            /*}*/
-          /*}*/
+        /*.search-right {*/
+        /*.search-btn {*/
+        /*position: absolute;*/
+        /*left: 282px;*/
+        /*}*/
+        /*}*/
         /*}*/
       }
       table {
@@ -742,27 +756,29 @@
           height: 100px;
           line-height: 100px;
         }
-        th:first-child,td:first-child{
-          padding-left:40px;
+        th:first-child, td:first-child {
+          padding-left: 40px;
         }
-        th:last-child,td:last-child{
-          padding-right:40px;
+        th:last-child, td:last-child {
+          padding-right: 40px;
         }
         @media screen and (max-width: 768px) {
-          th:first-child,td:first-child{
-            padding-left:0;
+          th:first-child, td:first-child {
+            padding-left: 0;
           }
-          th:last-child,td:last-child{
-            padding-right:0;
+
+          th:last-child, td:last-child {
+            padding-right: 0;
           }
+
           td.no-data {
             text-align: center;
           }
         }
-        .add{
+        .add {
           color: #82bd39;
         }
-        .minus{
+        .minus {
           color: #f64b3e;
         }
       }
@@ -770,16 +786,17 @@
         margin-top: 10px;
         @media screen and (max-width: 768px) {
           position: relative;
-          .pagination-left{
+          .pagination-left {
             position: absolute;
-            top:32px;
-            left:49px;
+            top: 32px;
+            left: 49px;
           }
-          .pagination-right{
-            .total{
+
+          .pagination-right {
+            .total {
               position: absolute;
-              top:32px;
-              right:49px;
+              top: 32px;
+              right: 49px;
             }
           }
         }
@@ -802,85 +819,88 @@
     @media screen and (max-width: 768px) {
       h3:nth-child(2) {
         position: relative;
-        .iconfont{
-          position:absolute;
+        .iconfont {
+          position: absolute;
           top: 4px;
         }
-        .icon-copy{
+        .icon-copy {
           right: 28px;
         }
-        .icon-code{
-          right:58px;
+        .icon-code {
+          right: 58px;
         }
         span:nth-child(2) {
           display: block;
           font-size: @font-size-16;
         }
       }
-      .account-property{
-        .table-box{
-          background:@bg-1-color;
-          .table{
-            tr{
-              border:0;
-              td{
-                border-right:0;
+
+      .account-property {
+        .table-box {
+          background: @bg-1-color;
+          .table {
+            tr {
+              border: 0;
+              td {
+                border-right: 0;
               }
             }
-            td:last-child{
-              border-bottom:0;
-              margin-bottom:0;
+            td:last-child {
+              border-bottom: 0;
+              margin-bottom: 0;
             }
           }
         }
       }
-      .transaction-record{
-        .search{
+
+      .transaction-record {
+        .search {
           .search-left {
             text-align: left;
-            margin-bottom:5px;
-            display:flex;
+            margin-bottom: 5px;
+            display: flex;
             justify-content: start;
             .el-select {
-              margin-right:0;
+              margin-right: 0;
               .el-input {
-                .el-input__inner{
+                .el-input__inner {
                   /*width:84%;*/
                 }
-                .el-input__suffix{
+                .el-input__suffix {
                   /*right:40px;*/
                 }
               }
             }
-            .el-select:nth-child(2){
-              margin-left:25px;
+            .el-select:nth-child(2) {
+              margin-left: 25px;
             }
           }
-          .search-right{
+          .search-right {
             text-align: left;
-            display:flex;
+            display: flex;
             justify-content: start;
-            div.date-text{
-              display:none;
+            div.date-text {
+              display: none;
             }
-            .el-date-editor{
-              margin-right:0;
-              width:auto;
-              .el-range-input{
-                width:50%;
+            .el-date-editor {
+              margin-right: 0;
+              width: auto;
+              .el-range-input {
+                width: 50%;
               }
             }
-            .search-btn{
+            .search-btn {
               position: initial;
             }
           }
         }
       }
+
       .el-dialog__wrapper {
         .el-dialog {
           min-width: 320px;
           .el-dialog__body {
-            padding:10px 0;
+            padding: 10px 0;
             .qr-code {
               /*width: 170px;*/
               /*height: 170px;*/
@@ -893,7 +913,8 @@
       }
     }
   }
-  .el-popup-parent--hidden{
-    padding-right:0!important;
+
+  .el-popup-parent--hidden {
+    padding-right: 0 !important;
   }
 </style>

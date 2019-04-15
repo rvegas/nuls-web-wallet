@@ -1,6 +1,6 @@
 'use strict';
 // Template version: 1.3.1
-// see http://vuejs-templates.github.io/webpack for documentation.
+// see http://vuejs-templates.github.io/webpack for documentation.Template.
 const path = require('path')
 module.exports = {
   dev: {
@@ -10,8 +10,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://testnet.wallet.nuls.io',
-        // target: 'https://wallet.nuls.io',
+        //target: 'http://testnet.wallet.nuls.io',
+         target: 'https://wallet.nuls.io',
         // target: 'http://192.168.1.39:8080',
         changeOrigin: true,   //允许跨域
         pathRewrite: {

@@ -276,7 +276,13 @@
                 if(data.data.feeType==='1'){
                   //console.log('success');
                 }else if(data.data.feeType==='2'){
-                  _this.transferForm.account=LeftShiftEight(RightShiftEight(_this.addressUsable)- Number(data.data.fee)).toString()
+                  if (parseInt(data.data.maxMoney) > 0) {
+                    _this.$message({
+                      message: _this.$t('message.tip1') + LeftShiftEight(data.data.maxMoney), type: 'warning', duration: '3000'
+                    });
+                  }else {
+                    _this.transferForm.account = LeftShiftEight(RightShiftEight(_this.addressUsable) - Number(data.data.fee)).toString()
+                  }
                 }else if(data.data.feeType==='3'){
                   _this.$message({
                     message: _this.$t('message.failed') +':'+_this.$t('message.noMoney1'), type: 'warning', duration: '1000'

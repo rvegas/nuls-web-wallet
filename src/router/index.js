@@ -141,6 +141,13 @@ export default new Router({
         }
       },
     },
+
+    {
+      path: '/transfer/zeroToWhole',
+      name: '/zeroToWhole',
+      component: resolve => require(['@/pages/transfer/ZeroToWhole'], resolve),
+    },
+
     /**
      * 共识
      * consensus

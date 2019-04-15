@@ -695,6 +695,17 @@ const en = {
     privacyPolicy: 'Privacy policy',
     about: 'About',
     bugReport:'Bug Report',
+
+    tip1:'Sorry, you have too much change. The most you can consume this time is: ',
+
+    zero:'Change',
+    zero0:'Wallet',
+    zero1:'• The consensus reward will make the account have many pieces of change, which may affect the use of functions such as stake or transfer. Users can solve this problem by using the change function below',
+    zero2:'• Please check the transaction records of your account. Multiple sums of small change will incur multiple transactions and the status might stay “unconfirmed”.',
+    zero3:'Current change：',
+    zero4:'Chapter',
+    zero5:'Estimated fee：',
+    zero6:'Confirm',
   },
 
   ...enLocale
