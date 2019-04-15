@@ -14,7 +14,7 @@
         <div class="zero-line">
           <span>{{$t('message.zero5')}}</span> {{zeroInfo.fee}} NULS
         </div>
-        <el-button type="success" :disabled="zeroInfo.count <= 2" @click="zeroTo">{{$t('message.zero6')}}</el-button>
+        <el-button type="success" :disabled="zeroInfo.count <= 1" @click="zeroTo">{{$t('message.zero6')}}</el-button>
       </div>
 
     </div>
